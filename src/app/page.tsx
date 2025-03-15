@@ -33,24 +33,36 @@ export default function Home() {
         console.error('Error fetching data:', error);
         setLoading(false);
       });
+
+      return function () {
+        
+      }
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Daftar Surah</h1>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <ul className="list-disc pl-5">
-          {surahs.map((surah) => (
-            <li key={surah.nomor} className="mb-2">
-              <span className="font-semibold">{surah.nama_latin}</span> -{' '}
-              {surah.arti} ({surah.jumlah_ayat} ayat)
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-cyan-100 to-green-100 p-4">
+      <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
+        <h1 className="text-2xl font-semibold text-teal-700 text-center mb-4">Daftar Surah</h1>
+        {loading ? (
+          <p className="text-center text-gray-600">Loading...</p>
+        ) : (
+          <ul className="space-y-3">
+            {surahs.map((surah) => (
+              <li
+                key={surah.nomor}
+                className="bg-green-100 p-3 rounded-lg flex justify-between items-center transition-transform transform hover:scale-105 hover:bg-green-200"
+              >
+                <span className="font-semibold text-green-700">
+                  {surah.nama_latin}
+                </span>
+                <span className="text-gray-600">
+                  {surah.arti} ({surah.jumlah_ayat} ayat)
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
-
