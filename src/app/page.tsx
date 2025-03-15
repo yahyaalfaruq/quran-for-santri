@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface Surah {
@@ -52,12 +53,14 @@ export default function Home() {
                 key={surah.nomor}
                 className="bg-green-100 p-3 rounded-lg flex justify-between items-center transition-transform transform hover:scale-105 hover:bg-green-200"
               >
-                <span className="font-semibold text-green-700">
-                  {surah.nama_latin}
-                </span>
-                <span className="text-gray-600">
-                  {surah.arti} ({surah.jumlah_ayat} ayat)
-                </span>
+                <Link href={`/surat/${surah.nomor}`} key={surah.nomor}>
+                  <span className="font-semibold text-green-700">
+                    {surah.nama_latin}
+                  </span>
+                  <span className="text-gray-600">
+                    {surah.arti} ({surah.jumlah_ayat} ayat)
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>
