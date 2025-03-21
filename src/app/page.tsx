@@ -34,36 +34,31 @@ export default function Home() {
         console.error('Error fetching data:', error);
         setLoading(false);
       });
-
-      return function () {
-        
-      }
   }, []);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-cyan-100 to-green-100 p-4">
-      <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
-        <h1 className="text-2xl font-semibold text-teal-700 text-center mb-4">Daftar Surah</h1>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-sage-100 to-blue-100 p-4">
+      <div className="w-full max-w-6xl p-6">
+        <h1 className="text-3xl font-bold text-sage-900 text-center mb-8">Daftar Surah</h1>
         {loading ? (
           <p className="text-center text-gray-600">Loading...</p>
         ) : (
-          <ul className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {surahs.map((surah) => (
-              <li
-                key={surah.nomor}
-                className="bg-green-100 p-3 rounded-lg flex justify-between items-center transition-transform transform hover:scale-105 hover:bg-green-200"
-              >
-                <Link href={`/surat/${surah.nomor}`} key={surah.nomor}>
-                  <span className="font-semibold text-green-700">
+              <Link href={`/surat/${surah.nomor}`} key={surah.nomor}>
+                <div
+                  className="bg-gradient-to-r from-sage-200 to-blue-200 p-6 rounded-xl shadow-sm flex flex-col justify-between items-center text-center transition-all transform hover:scale-105 hover:shadow-md"
+                >
+                  <span className="text-2xl font-bold text-sage-900">
                     {surah.nama_latin}
                   </span>
-                  <span className="text-gray-600">
+                  <span className="text-gray-700 mt-2">
                     {surah.arti} ({surah.jumlah_ayat} ayat)
                   </span>
-                </Link>
-              </li>
+                </div>
+              </Link>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
