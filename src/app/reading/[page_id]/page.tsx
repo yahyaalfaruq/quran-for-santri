@@ -49,7 +49,7 @@ const Page = () => {
 
         // Fetch Quran ayahs in the range
         const response = await fetch(
-          `https://quran.ppqita.my.id/api/quran?start=${start}&end=${end}&token=TADABBUR_EMAILKU`
+          `https://quran.ppqita.my.id/api/quran?mushafPage=${page_id}&token=TADABBUR_EMAILKU`
         );
 
         if (!response.ok) {
@@ -70,6 +70,7 @@ const Page = () => {
 
         setAyahs(fetchedAyahs);
         setLoading(false);
+        console.log(fetchedAyahs)
       } catch (error) {
         console.error("Error:", error);
         setError("Terjadi kesalahan saat memuat halaman.");
@@ -88,13 +89,9 @@ const Page = () => {
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-4">Halaman {page_id}</h1>
       <div className="space-y-6">
-        {ayahs.map((ayah) => (
           <AyahDisplay
-            key={ayah.number.inQuran}
-            text={ayah.text}
-            translation={ayah.translation}
+            ayahs={ayahs}
           />
-        ))}
       </div>
     </div>
   );
