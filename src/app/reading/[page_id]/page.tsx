@@ -21,6 +21,8 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [instruction, setInstruction] = useState<boolean>(true);
+
   useEffect(() => {
     const fetchPageData = async () => {
       try {
@@ -81,13 +83,20 @@ const Page = () => {
     fetchPageData();
   }, [page_id]);
 
+  useEffect(() => {
+    if (instruction) {
+      alert("Bacalah halaman ini sebanyak 3x!");
+      setInstruction(false);
+    }
+  }, []);
+
   if (loading) return <p className="text-center mt-10">Memuat...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!ayahs.length) return <p className="text-center">Tidak ada ayat untuk halaman ini.</p>;
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-4">Halaman {page_id}</h1>
+      <h1 className="text-5xl font-bold mb-4 text-center">Halaman {page_id}</h1>
       <div className="space-y-6">
           <AyahDisplay
             ayahs={ayahs}

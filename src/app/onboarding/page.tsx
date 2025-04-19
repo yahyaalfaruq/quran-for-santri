@@ -28,7 +28,7 @@ const OnboardingPage = () => {
           className="border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300"
         >
           {/* Contoh dropdown 1-30 */}
-          {[...Array(30).keys()].map((num) => (
+          {[...Array(604).keys()].map((num) => (
             <option key={num + 1} value={num + 1}>
               Halaman {num + 1}
             </option>
