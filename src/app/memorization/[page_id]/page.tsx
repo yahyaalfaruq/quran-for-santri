@@ -28,7 +28,7 @@ const MemorizationPage = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://quran.ppqita.my.id/api/quran?page=${pageId}&token=TADABBUR_EMAILKU`
+          `https://quran.ppqita.my.id/api/quran?mushafPage=${pageId}&token=TADABBUR_EMAILKU`
         );
         const result = await response.json();
         setAyahs(result.data);
@@ -57,6 +57,10 @@ const MemorizationPage = () => {
   const handleNextAyah = () => {
     if (count >= 20) {
       setCount(0);  // Reset hitungan
+      console.log("Ayahs length adalah:", ayahs.length);
+      console.log("Current Index adalah:", currentIndex);
+      
+      
       if (currentIndex < ayahs.length - 1) {
         setCurrentIndex(currentIndex + 1);  // Pindah ke ayat selanjutnya
       } else {
