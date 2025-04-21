@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import AyahDisplay from "../../memorization/[page_id]/components/AyahDisplay";
+import { ms } from "date-fns/locale";
+import ConfirmReadButton from "./components/ConfirmReadButton";
+import StartMemorizationButton from "./components/StartMemorizationButton";
 
 interface Ayah {
   number: {
@@ -20,6 +23,7 @@ const Page = () => {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [readCount, setReadCount] = useState<number>(0);
 
   const [instruction, setInstruction] = useState<boolean>(true);
 
@@ -85,7 +89,7 @@ const Page = () => {
 
   useEffect(() => {
     if (instruction) {
-      alert("Bacalah halaman ini sebanyak 3x!");
+      setTimeout(() => {alert("Bacalah halaman ini sebanyak 3x!")}, 2000);
       setInstruction(false);
     }
   }, []);
@@ -95,12 +99,19 @@ const Page = () => {
   if (!ayahs.length) return <p className="text-center">Tidak ada ayat untuk halaman ini.</p>;
 
   return (
-    <div className="p-8">
+    <div className="p-8 relative">
+      <div className="absolute w-screen h-screen ">
+
+      </div>
       <h1 className="text-5xl font-bold mb-4 text-center">Halaman {page_id}</h1>
       <div className="space-y-6">
           <AyahDisplay
             ayahs={ayahs}
           />
+      </div>
+      <div>
+          <ConfirmReadButton pageId={page_id} readCount={readCount} setReadCount={setReadCount} />
+          <StartMemorizationButton pageId={page_id} readCount={readCount} />
       </div>
     </div>
   );
