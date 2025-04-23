@@ -16,6 +16,8 @@ interface Ayah {
   translation: string;
 }
 
+let instruction = true;
+
 const Page = () => {
   const params = useParams();  // Mengambil params dengan useParams
   const page_id = params?.page_id as string;
@@ -25,7 +27,7 @@ const Page = () => {
   const [error, setError] = useState<string | null>(null);
   const [readCount, setReadCount] = useState<number>(0);
 
-  const [instruction, setInstruction] = useState<boolean>(true);
+  // const [instruction, setInstruction] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPageData = async () => {
@@ -90,7 +92,7 @@ const Page = () => {
   useEffect(() => {
     if (instruction) {
       setTimeout(() => {alert("Bacalah halaman ini sebanyak 3x!")}, 2000);
-      setInstruction(false);
+      instruction = false;
     }
   }, []);
 
