@@ -3,26 +3,42 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import HighlightText from './components/HighlightText';
 import Counter from './components/Counter';
-import { log } from 'console';
 
+import localFont from 'next/font/local';
+
+const lpmqFont = localFont({
+  src: '../../../fonts/LPMQ IsepMisbah.ttf',
+  variable: '--font-lpmq',
+});
 interface Ayah {
   ayat: {
     arab: string;
     latin: string;
     translation: string;
+    number: {
+      inQuran: number;
+      inSurah: number;
+    };
+  };
+  surah: {
+    jumlah_ayat: number;
+    nama: string;
+    nama_latin: string;
+    nomor: number;
   };
 }
 
+
+
 const MemorizationPage = () => {
   const params = useParams();
-  const pageId = params?.page_id as string; // Pastikan nama dinamisnya 'page_id'
+  const pageId = params?.page_id as string; // pastikan nama folder adalah [page_id]
 
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [count, setCount] = useState(0);
+  const [displayedIndices, setDisplayedIndices] = useState<number[]>([0]); // indeks ayat yg ditampilkan
   const router = useRouter();
-  const [showAllAyahs, setShowAllAyahs] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,103 +55,75 @@ const MemorizationPage = () => {
       }
     };
 
-    if (pageId) {
-      fetchData();
-    }
-
-    console.log("Isi data fetch adalah", fetchData);
+    if (pageId) fetchData();
   }, [pageId]);
 
-  // 🔁 Reset count setiap ganti ayat
-  useEffect(() => {
-    setCount(0);
-  }, [currentIndex]);
+  function numLatinToArabic(n: string | number) {
+    if (typeof n === "number") {
+      n = n.toString();
+    }
+    return n.toString().replace(/\d/g, (d: any) => "٠١٢٣٤٥٦٧٨٩"[d]).replace(/\./g, ",");
+  }  
 
-  if (loading) return <p className="text-center">Memuat halaman...</p>;
-  if (ayahs.length === 0) return <p className="text-center">Tidak ada ayat</p>;
+  const currentIndex = displayedIndices[displayedIndices.length - 1];
 
   const handleNextAyah = () => {
     if (count >= 20) {
-      setCount(0);  // Reset hitungan
-      console.log("Ayahs length adalah:", ayahs.length);
-      console.log("Current Index adalah:", currentIndex);
-      
-      
-      if (currentIndex < ayahs.length - 1) {
-        setCurrentIndex(currentIndex + 1);  // Pindah ke ayat selanjutnya
+      setCount(0); // reset hitungan
+      const nextIndex = currentIndex + 1;
+      if (nextIndex < ayahs.length) {
+        setDisplayedIndices([...displayedIndices, nextIndex]); // tambahkan ayat berikutnya
       } else {
-        // Kalau sudah di ayat terakhir, tidak pindah, tombol tampilkan semua ayat muncul
-        setShowAllAyahs(true);  // Munculkan seluruh ayat setelah membaca 20x
+        // Kalau sudah selesai pada ayat terakhir, bisa ke halaman progress atau apa pun
+        router.push('/progress');
       }
     }
   };
 
-  console.log("Fungsi ini isinya adalah:", handleNextAyah);
-  
+  console.log("Contoh ayat:", ayahs[0]);
 
-  console.log("currentIndex:", currentIndex);
-  console.log("ayahs.length:", ayahs.length);
-  console.log("count:", count);
-
+  if (loading) return <p className="text-center">Memuat halaman...</p>;
+  if (ayahs.length === 0) return <p className="text-center">Tidak ada ayat</p>;
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <h1 className="text-3xl font-bold text-center mb-6">
         Hafalan Halaman {pageId}
       </h1>
-  
-      <div className="bg-white shadow-lg rounded-lg p-8 mb-6">
-        <HighlightText
-          text={ayahs[currentIndex].ayat.arab}
-          highlight={count >= 20 ? ayahs[currentIndex].ayat.arab : ''}
-        />
-  
-        <p className="text-lg text-gray-600 italic mt-4">
-          {ayahs[currentIndex].ayat.latin}
-        </p>
-        <p className="text-base">{ayahs[currentIndex].ayat.translation}</p>
-      </div>
-  
-      <div className="flex flex-col items-center gap-4">
-        <Counter count={count} setCount={setCount} />
-  
-        {currentIndex === ayahs.length - 1 && count >= 20 ? (
-          <button
-            onClick={() => setShowAllAyahs(true)}
-            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
-          >
-            Tampilkan Semua Ayat
-          </button>
-        ) : (
-          <button
-            onClick={handleNextAyah}
-            disabled={count < 20}
-            className={`px-6 py-3 rounded-lg transition ${
-              count >= 20
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-gray-400 text-gray-200 cursor-not-allowed'
-            }`}
-          >
-            Lanjut Ayat
-          </button>
-        )}
-      </div>
-  
-      {showAllAyahs && (
-        <div className="mt-8 bg-white rounded-lg shadow p-6">
-          <h2 className="text-2xl font-semibold mb-4">Semua Ayat di Halaman {pageId}</h2>
-          {ayahs.map((ayah, index) => (
-            <div key={index} className="mb-4 border-b pb-2">
-              <p className="text-xl">{ayah.ayat.arab}</p>
-              <p className="text-gray-600 italic">{ayah.ayat.latin}</p>
-              <p className="text-sm">{ayah.ayat.translation}</p>
-            </div>
-          ))}
+
+      {displayedIndices.map((index, idx) => (
+        <div key={index} className={`bg-white shadow-lg rounded-lg p-6 mb-4 font-arabic ${lpmqFont.className}`}>
+          <div className="text-4xl flex flex-row justify-end items-end gap-3">
+            
+            <span>{numLatinToArabic(ayahs[index].ayat.number.inSurah)} 
+            <HighlightText
+              text={ayahs[index].ayat.arab}
+              highlight={idx === displayedIndices.length - 1 && count >= 20 ? ayahs[index].ayat.arab : ''}
+            />
+            </span>
+          </div>{" "}
+          <p className="text-lg text-gray-600 italic mt-2">{ayahs[index].ayat.latin}</p>
+          <p className="text-base">{ayahs[index].ayat.translation}</p>
         </div>
-      )}
+      ))}
+
+      <div className="flex items-center justify-between mt-6">
+        <Counter count={count} setCount={setCount} />
+
+        <button
+          onClick={handleNextAyah}
+          disabled={count < 20}
+          className={`px-6 py-3 rounded-lg transition ${
+            count >= 20
+              ? 'bg-blue-600 text-white hover:bg-blue-700'
+              : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+          }`}
+        >
+          Lanjut Ayat
+        </button>
+      </div>
     </div>
-  );  
-      
+  );
 };
 
 export default MemorizationPage;

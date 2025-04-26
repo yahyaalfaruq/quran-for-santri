@@ -11,8 +11,7 @@ const AyahDisplay = ({ ayahs }: { ayahs: any[] }) => {
         {ayahs.map((ayah, index) => (
           <div key={index} className={`font-arabic p-7 ${lpmqFont.className} flex flex-col gap-3`}>
             <div className='flex flex-row justify-end items-end gap-3'>
-                <span className='text-5xl'>{numLatinToArabic(ayah.number.inSurah)}</span> 
-                <span className='text-4xl'>{ayah.text}</span>
+                <span className='text-[3rem] leading-20 text-right'><span className='text-4xl'>{ayah.text}</span> {numLatinToArabic(ayah.number.inSurah)}</span> 
             </div>
             <p className='text-3xl'>{ayah.latin}</p>
             <p className='text-3xl'>{ayah.translation}</p>
