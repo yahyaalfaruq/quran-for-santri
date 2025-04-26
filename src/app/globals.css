@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+.border-image-custom {
+  border: 2px solid transparent;
+  border-image: url('/border1.png') 150 round;
+  border-image-slice: 150;
+  border-image-width: 23px; 
+  border-radius: 1rem;
+}
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
