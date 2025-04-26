@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import localFont from 'next/font/local';
+import { useRouter } from 'next/router';
 
 const lpmqFont = localFont({
   src: '../../../../fonts/LPMQ IsepMisbah.ttf',
@@ -13,6 +14,7 @@ interface SuratPageProps {
 }
 
 const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
+    const router = useRouter();
   const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +71,15 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       {/* Container Utama */}
+      <button 
+            onClick={() => router.push('/')}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white text-blue-600 hover:bg-blue-100 rounded-full p-2 shadow-md transition-colors duration-200"
+            aria-label="Kembali ke Home"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
       <div className="mx-auto max-w-4xl">
         {/* Header Surah */}
         <div className="bg-blue-300 rounded-lg shadow-sm p-6 mb-6 text-center">
