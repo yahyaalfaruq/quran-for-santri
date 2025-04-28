@@ -16,8 +16,6 @@ interface Ayah {
   translation: string;
 }
 
-let instruction = true;
-
 const Page = () => {
   const params = useParams();  // Mengambil params dengan useParams
   const page_id = params?.page_id as string;
@@ -26,6 +24,7 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [readCount, setReadCount] = useState<number>(0);
+  const [hasShownInstruction, setHasShownInstruction] = useState(false); // 🆕
 
   // const [instruction, setInstruction] = useState<boolean>(true);
 
@@ -73,8 +72,12 @@ const Page = () => {
             inSurah: ayah.ayat?.number?.inSurah || 0,
           },
           text: ayah.ayat?.arab || "",
-          translation: ayah.ayat?.translation || ""
+          translation: ayah.ayat?.translation || "",
+          surah: {
+            nomor: ayah.ayat?.surah?.number || 0,
+          },
         }));
+        
 
         setAyahs(fetchedAyahs);
         setLoading(false);
@@ -89,12 +92,20 @@ const Page = () => {
     fetchPageData();
   }, [page_id]);
 
+  // useEffect(() => {
+  //   if (instruction) {
+  //     setTimeout(() => {alert("Bacalah halaman ini sebanyak 3x!")}, 2000);
+  //     instruction = false;
+  //   }
+  // }, []);
+
+  // 🆕 Alert langsung muncul setelah loading selesai
   useEffect(() => {
-    if (instruction) {
-      setTimeout(() => {alert("Bacalah halaman ini sebanyak 3x!")}, 2000);
-      instruction = false;
+    if (!loading && !error && !hasShownInstruction) {
+      alert("Bacalah halaman ini sebanyak 3x!");
+      setHasShownInstruction(true);
     }
-  }, []);
+  }, [loading, error, hasShownInstruction]);
 
   if (loading) return <p className="text-center mt-10">Memuat...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;

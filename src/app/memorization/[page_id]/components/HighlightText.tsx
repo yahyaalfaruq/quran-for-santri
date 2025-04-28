@@ -7,7 +7,7 @@ interface HighlightTextProps {
 export default function HighlightText({ text, highlight }: HighlightTextProps) {
   const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
   return (
-    <span className="leading-loose text-right text-2xl md:text-3xl">
+    <span className="leading-loose text-right text-blue-800 text-2xl md:text-3xl">
       {parts.map((part, index) => (
         <span key={index} className={part.toLowerCase() === highlight.toLowerCase() ? 'bg-yellow-300' : ''}>
           {part}

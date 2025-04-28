@@ -93,17 +93,28 @@ const MemorizationPage = () => {
 
       {displayedIndices.map((index, idx) => (
         <div key={index} className={`bg-white shadow-lg rounded-lg p-6 mb-4 font-arabic ${lpmqFont.className}`}>
-          <div className="text-4xl flex flex-row justify-end items-end gap-3">
-            
-            <span>{numLatinToArabic(ayahs[index].ayat.number.inSurah)} 
-            <HighlightText
-              text={ayahs[index].ayat.arab}
-              highlight={idx === displayedIndices.length - 1 && count >= 20 ? ayahs[index].ayat.arab : ''}
-            />
+          
+          {/* Tampilkan Bismillah jika ayat pertama, dan bukan Al-Fatihah */}
+          {ayahs[index].ayat.number.inSurah === 1 && ayahs[index].surah.nomor !== 1 && (
+            <div className="text-center text-4xl mb-6">
+              بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+            </div>
+          )}
+
+          <div className="text-[2rem] text-right leading-loose">
+            <span>
+              <HighlightText
+                text={ayahs[index].ayat.arab}
+                highlight={idx === displayedIndices.length - 1 && count >= 20 ? ayahs[index].ayat.arab : ''}
+              />
             </span>
-          </div>{" "}
+            <span className="text-5xl align-center mr-4">
+              {numLatinToArabic(ayahs[index].ayat.number.inSurah)}
+            </span>
+          </div>
+
           <p className="text-lg text-gray-600 italic mt-2">{ayahs[index].ayat.latin}</p>
-          <p className="text-base">{ayahs[index].ayat.translation}</p>
+          <p className="text-xl">{ayahs[index].ayat.translation}</p>
         </div>
       ))}
 
