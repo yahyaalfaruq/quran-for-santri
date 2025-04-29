@@ -1,6 +1,6 @@
 interface CounterProps {
   count: number;
-  setCount: React.Dispatch<React.SetStateAction<number>>;
+  setCount: (newCount: number) => void;
   onCountComplete?: () => void;
 }
 
@@ -22,6 +22,7 @@ export default function Counter({ count, setCount, onCountComplete }: CounterPro
       <button
         className="bg-green-600 text-white px-4 py-2 rounded-lg mt-2"
         onClick={incrementCount}
+        disabled={count >= 20}
       >
         Tambah Hitungan
       </button>

@@ -37,6 +37,8 @@ const MemorizationPage = () => {
   const [count, setCount] = useState(0);
   const [displayedIndices, setDisplayedIndices] = useState<number[]>([0]);
   const [completedAyahs, setCompletedAyahs] = useState<number[]>([]); 
+  const [ayahCounts, setAyahCounts] = useState<{ [index: number]: number }>({});
+
   const router = useRouter();
 
   useEffect(() => {
@@ -67,9 +69,7 @@ const MemorizationPage = () => {
   const currentIndex = displayedIndices[displayedIndices.length - 1];
 
   const handleNextAyah = () => {
-    if (count >= 20) {
-      setCompletedAyahs([...completedAyahs, currentIndex]); // tandai ayat sebagai selesai
-      setCount(0);
+    if ((ayahCounts[currentIndex] || 0) >= 20) {
       const nextIndex = currentIndex + 1;
       if (nextIndex < ayahs.length) {
         setDisplayedIndices([...displayedIndices, nextIndex]);
@@ -78,6 +78,7 @@ const MemorizationPage = () => {
       }
     }
   };
+  
   
 
   if (loading) return <p className="text-center">Memuat halaman...</p>;
@@ -90,41 +91,59 @@ const MemorizationPage = () => {
       </h1>
 
       {displayedIndices.map((index, idx) => {
-          const isCompleted = completedAyahs.includes(index);
-          return (
-            <div
-              key={index}
-              className={`shadow-lg rounded-lg p-6 mb-4 font-arabic ${lpmqFont.className}
-                ${isCompleted ? 'bg-green-100 animate-check' : 'bg-white'}`}
-            >
-              {/* Bismillah */}
-              {ayahs[index].ayat.number.inSurah === 1 && ayahs[index].surah.nomor !== 1 && (
-                <div className="text-center text-4xl mb-6">
-                  بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                </div>
-              )}
-
-              <div className="text-[2rem] text-right leading-loose">
-                <span>
-                  <HighlightText
-                    text={ayahs[index].ayat.arab}
-                    highlight={''} // tidak perlu highlight karena kita pakai latar
-                  />
-                </span>
-                <span className="text-5xl align-center mr-4">
-                  {numLatinToArabic(ayahs[index].ayat.number.inSurah)}
-                </span>
-              </div>
-            
-              <p className="text-lg text-gray-600 italic mt-2">{ayahs[index].ayat.latin}</p>
-              <p className="text-xl">{ayahs[index].ayat.translation}</p>
+      const countForThisAyah = ayahCounts[index] || 0;
+      const isCurrent = index === currentIndex;
+      const isCompleted = countForThisAyah >= 20;
+      
+      let bgClass = 'bg-white';
+      if (isCompleted) bgClass = 'bg-green-100';
+      else if (isCurrent) bgClass = 'bg-yellow-100';
+      
+      return (
+        <div
+          key={index}
+          className={`relative shadow-lg rounded-lg p-6 mb-4 font-arabic ${bgClass} ${lpmqFont.className}`}
+        >
+          {/* Centang jika selesai */}
+          {isCompleted && (
+            <div className="absolute right-4 bottom-4 text-green-600 text-3xl animate-check">
+              ✔
             </div>
-          );
+          )}
+
+          {/* Bismillah */}
+          {ayahs[index].ayat.number.inSurah === 1 && ayahs[index].surah.nomor !== 1 && (
+            <div className="text-center text-4xl mb-6">
+              بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+            </div>
+          )}
+
+          <div className="text-[2rem] text-right leading-loose">
+            <span>
+              <HighlightText text={ayahs[index].ayat.arab} highlight={''} />
+            </span>
+            <span className="text-5xl align-center mr-4">
+              {numLatinToArabic(ayahs[index].ayat.number.inSurah)}
+            </span>
+          </div>
+        
+          <p className="text-lg text-gray-600 italic mt-2">{ayahs[index].ayat.latin}</p>
+          <p className="text-xl">{ayahs[index].ayat.translation}</p>
+        </div>
+        );
       })}
 
 
+
       <div className="flex items-center justify-between mt-6">
-        <Counter count={count} setCount={setCount} onCountComplete={() => {}} />
+        <Counter
+          count={ayahCounts[currentIndex] || 0}
+          setCount={(newCount) =>
+          setAyahCounts((prev) => ({ ...prev, [currentIndex]: newCount }))
+          }
+        />
+
+
 
         <button
           onClick={handleNextAyah}
