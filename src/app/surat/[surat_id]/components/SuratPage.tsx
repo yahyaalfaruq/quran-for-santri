@@ -1,12 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import localFont from 'next/font/local';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
+import localFont from "next/font/local";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  FaArrowLeft,
+  FaArrowRight,
+  FaArrowLeftLong,
+  FaBookOpen,
+  FaBook,
+} from "react-icons/fa6";
 
 const lpmqFont = localFont({
-  src: '../../../../fonts/LPMQ IsepMisbah.ttf',
-  variable: '--font-lpmq',
+  src: "../../../../fonts/LPMQ IsepMisbah.ttf",
+  variable: "--font-lpmq",
 });
 
 interface SuratPageProps {
@@ -14,10 +22,11 @@ interface SuratPageProps {
 }
 
 const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
-    const router = useRouter();
   const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isReadingMode, setIsReadingMode] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,8 +40,8 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
         const result = await response.json();
         setData(result);
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Gagal memuat data. Silakan coba lagi.');
+        console.error("Error fetching data:", error);
+        setError("Gagal memuat data. Silakan coba lagi.");
       } finally {
         setLoading(false);
       }
@@ -40,6 +49,16 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
 
     fetchData();
   }, [surat_id]);
+
+  const navigateToSurah = (surahId: number) => {
+    if (surahId >= 1 && surahId <= 114) {
+      router.push(`/surat/${surahId}`);
+    }
+  };
+
+  const toggleReadingMode = () => {
+    setIsReadingMode(!isReadingMode);
+  };
 
   if (loading) {
     return (
@@ -65,32 +84,71 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
     );
   }
 
-  // Cek apakah surat bukan Al-Fatihah (nomor surat 1)
-  const isNotAlFatihah = surat_id !== '1';
+  const currentSurahNumber = parseInt(surat_id);
+  const isNotAlFatihah = currentSurahNumber !== 1;
+  const hasPreviousSurah = currentSurahNumber > 1;
+  const hasNextSurah = currentSurahNumber < 114;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-      {/* Container Utama */}
-      <button 
-            onClick={() => router.push('/')}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white text-blue-600 hover:bg-blue-100 rounded-full p-2 shadow-md transition-colors duration-200"
-            aria-label="Kembali ke Home"
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-blue-300 sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          {/* Tombol Kembali */}
+          <Link href="/surat">
+            <button className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition">
+              <FaArrowLeft size={18} />
+              <span className="hidden sm:inline">Kembali</span>
+            </button>
+          </Link>
+
+          {/* Judul Surah (centered) */}
+          <div className="text-center">
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-800">
+              <span className="text-white">Surah</span> {data.data[0]?.surah.nama_latin}
+            </h1>
+            <p className="text-xs sm:text-sm text-gray-600">
+              {data.data[0]?.surah.arti} • {data.data[0]?.surah.jumlah_ayat} Ayat
+            </p>
+          </div>
+
+          {/* Reading Mode Button */}
+          <button
+            onClick={toggleReadingMode}
+            className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-            </svg>
+            {isReadingMode ? <FaBookOpen size={18} /> : <FaBook size={18} />}
           </button>
-      <div className="mx-auto max-w-4xl">
-        {/* Header Surah */}
-        <div className="bg-blue-300 rounded-lg shadow-sm p-6 mb-6 text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-blue-800 mb-2">
-            <span className='text-white'>Surah</span> {data.data[0]?.surah.nama_latin}
-          </h1>
-          <p className="text-sm text-gray-600">
-            {data.data[0]?.surah.arti} • {data.data[0]?.surah.jumlah_ayat} Ayat
-          </p>
         </div>
 
+        {/* Navigation Buttons - Horizontal */}
+        <div className="container mx-auto px-4 pb-4 flex justify-center gap-4">
+          {hasPreviousSurah && (
+            <button
+              onClick={() => navigateToSurah(currentSurahNumber - 1)}
+              className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition"
+              title="Surat sebelumnya"
+            >
+              <FaArrowLeftLong size={18} />
+              <span className="hidden sm:inline">Surat Sebelumnya</span>
+            </button>
+          )}
+          
+          {hasNextSurah && (
+            <button
+              onClick={() => navigateToSurah(currentSurahNumber + 1)}
+              className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition"
+              title="Surat berikutnya"
+            >
+              <span className="hidden sm:inline"> Surat Berikutnya</span>
+              <FaArrowRight size={18} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Konten Utama */}
+      <div className="container mx-auto px-4 py-6">
         {/* Daftar Ayat */}
         <div className="space-y-4">
           {data.data.map((item: any, index: number) => (
@@ -101,12 +159,16 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
               {/* Tampilkan "Bismillah" di atas ayat pertama jika bukan Al-Fatihah */}
               {isNotAlFatihah && index === 0 && (
                 <div className="mb-4">
-                  <p className={`text-right text-3xl font-arabic ${lpmqFont.className} text-gray-800`}>
-                  بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
+                  <p
+                    className={`text-right text-3xl font-arabic ${lpmqFont.className} text-gray-800`}
+                  >
+                    بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
                   </p>
-                  <p className="text-sm italic text-gray-600 mt-2">
-                    Bismillahirrahmanirrahim
-                  </p>
+                  {!isReadingMode && (
+                    <p className="text-sm italic text-gray-600 mt-2">
+                      Bismillahirrahmanirrahim
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -118,19 +180,24 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
               </div>
 
               {/* Teks Arab */}
-              <p className={`text-right text-3xl font-arabic ${lpmqFont.className} text-gray-800 mb-4`}>
+              <p
+                className={`text-right text-3xl font-arabic ${lpmqFont.className} text-gray-800 mb-4`}
+              >
                 {item.ayat.arab}
               </p>
 
-              {/* Teks Latin */}
-              <p className="text-sm italic text-gray-600 mb-2">
-                {item.ayat.latin}
-              </p>
+              {/* Teks Latin dan Terjemahan hanya muncul jika Mode Biasa */}
+              {!isReadingMode && (
+                <>
+                  <p className="text-sm italic text-gray-600 mb-2">
+                    {item.ayat.latin}
+                  </p>
 
-              {/* Terjemahan */}
-              <p className="text-base text-gray-700">
-                {item.ayat.translation}
-              </p>
+                  <p className="text-base text-gray-700">
+                    {item.ayat.translation}
+                  </p>
+                </>
+              )}
             </div>
           ))}
         </div>

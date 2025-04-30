@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { GiHamburgerMenu, GiCrossMark } from "react-icons/gi";
+import { FiSearch } from "react-icons/fi";
 import localFont from "next/font/local";
 
 const lpmqFont = localFont({
@@ -22,6 +23,7 @@ export default function Home() {
   const [surahs, setSurahs] = useState<Surah[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetch(
@@ -41,6 +43,25 @@ export default function Home() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const filteredSurahs = useMemo(() => {
+    if (!searchQuery) return surahs;
+    
+    const query = searchQuery.toLowerCase();
+    
+    // Check if search query is a number
+    if (!isNaN(Number(query))) {
+      return surahs.filter(surah => surah.nomor === Number(query));
+    }
+    
+    // For non-number searches, search in name, arabic name, and meaning
+    return surahs.filter(
+      (surah) =>
+        surah.nama_latin.toLowerCase().includes(query) ||
+        surah.nama.toLowerCase().includes(query) ||
+        surah.arti.toLowerCase().includes(query)
+    );
+  }, [surahs, searchQuery]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -75,15 +96,21 @@ export default function Home() {
           </Link>
           <Link
             className="text-white font-bold hover:text-blue-800"
-            href="/program-page"
+            href="/onboarding"
           >
-            Program
+            Program Hafalan
           </Link>
           <Link
             className="text-white font-bold hover:text-blue-800"
             href="/page"
           >
-            Page
+            Pages
+          </Link>
+          <Link
+            className="text-white font-bold hover:text-blue-800"
+            href="/about"
+          >
+            About
           </Link>
         </div>
 
@@ -105,13 +132,27 @@ export default function Home() {
               >
                 Jadwal Shalat
               </Link>
-              <a
+              <Link
                 className="text-white font-bold hover:text-blue-800 p-2"
-                href=""
+                href="/onboarding"
                 onClick={toggleMenu}
               >
-                Program Kami
-              </a>
+                Program Hafalan
+              </Link>
+              <Link
+                className="text-white font-bold hover:text-blue-800 p-2"
+                href="/page"
+                onClick={toggleMenu}
+              >
+                Pages
+              </Link>
+              <Link
+                className="text-white font-bold hover:text-blue-800 p-2"
+                href="/about"
+                onClick={toggleMenu}
+              >
+                About
+              </Link>
             </div>
           </div>
         )}
@@ -123,46 +164,75 @@ export default function Home() {
           <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6">
             Daftar Surah Al-Quran
           </h1>
+          
+          {/* Search Bar */}
+          <div className="relative max-w-md mx-auto mb-8">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FiSearch className="text-gray-400" />
+            </div>
+            <input
+              type="text"
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Cari surah (nama/nomor/arti)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                onClick={() => setSearchQuery("")}
+              >
+                <GiCrossMark className="text-gray-400 hover:text-gray-600" />
+              </button>
+            )}
+          </div>
+          
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
             </div>
           ) : (
-            <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {surahs.map((surah) => (
-                <li key={surah.nomor}>
-                  <Link
-                    href={`/surat/${surah.nomor}`}
-                    className="block p-5 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 hover:bg-blue-200"
-                  >
-                    <div className="flex justify-between items-center">
-                      <div className="flex gap-3">
-                        <span className="text-xl rounded-lg flex items-center justify-center w-16 h-14 border-image-custom">
-                          {surah.nomor}.
-                        </span>
-                        <div>
-                          <span className="text-xl font-semibold text-gray-800">
-                            {surah.nama_latin}
+            <ul className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-4">
+              {filteredSurahs.length > 0 ? (
+                filteredSurahs.map((surah) => (
+                  <li key={surah.nomor}>
+                    <Link
+                      href={`/surat/${surah.nomor}`}
+                      className="block p-5 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 hover:bg-blue-200"
+                    >
+                      <div className="flex justify-between items-center">
+                        <div className="flex gap-3">
+                          <span className="text-xl rounded-lg flex items-center justify-center w-16 h-14 border-image-custom">
+                            {surah.nomor}.
                           </span>
-                          <p className="text-sm text-gray-600 mt-1">
-                            {surah.arti}
+                          <div>
+                            <span className="text-xl font-semibold text-gray-800">
+                              {surah.nama_latin}
+                            </span>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {surah.arti}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col-reverse">
+                          <span className="text-sm text-gray-500 mt-1">
+                            {surah.jumlah_ayat} ayat
+                          </span>
+                          <p
+                            className={`text-xl font-semibold ${lpmqFont.className}`}
+                          >
+                            {surah.nama}
                           </p>
                         </div>
                       </div>
-                      <div className="flex flex-col-reverse">
-                        <span className="text-sm text-gray-500 mt-1">
-                          {surah.jumlah_ayat} ayat
-                        </span>
-                        <p
-                          className={`text-xl font-semibold ${lpmqFont.className}`}
-                        >
-                          {surah.nama}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                </li>
-              ))}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-10">
+                  <p className="text-gray-500 text-lg">Tidak ada surah yang ditemukan</p>
+                </div>
+              )}
             </ul>
           )}
         </div>
