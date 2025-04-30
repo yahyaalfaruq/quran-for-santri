@@ -23,7 +23,7 @@
 
 .animate-check {
   position: relative;
-  background-color: #d1fae5; /* Latar belakang hijau 100 */
+  background-color: #E0F2FE; /* Latar belakang sky blue 100 */
 }
 
 .animate-check::after {
@@ -32,6 +32,6 @@
   right: 1rem;
   bottom: 1rem;
   font-size: 2rem;
-  color: green;
+  color: #2563EB;
   animation: checkmark-animation 0.5s ease-in-out;
 }

@@ -12,6 +12,9 @@ const ConfirmReadButton: React.FC<ConfirmReadButtonProps> = ({ pageId, readCount
     if (readCount < 3) {
       const newCount = readCount + 1;
       setReadCount(newCount);
+
+      // Scroll ke atas dengan animasi halus
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       alert("Saatnya menghafal!");
     }

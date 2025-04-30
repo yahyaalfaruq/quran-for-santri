@@ -1,6 +1,6 @@
 interface CounterProps {
   count: number;
-  setCount: (newCount: number) => void;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
   onCountComplete?: () => void;
 }
 
@@ -20,7 +20,11 @@ export default function Counter({ count, setCount, onCountComplete }: CounterPro
     <div className="flex flex-col items-center">
       <p className="text-lg font-bold">Hitungan: {count}/20</p>
       <button
-        className="bg-green-600 text-white px-4 py-2 rounded-lg mt-2"
+        className={`px-4 py-2 rounded-lg mt-2 transition font-semibold ${
+          count >= 20
+            ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+            : 'bg-blue-600 text-white hover:bg-blue-700'
+        }`}
         onClick={incrementCount}
         disabled={count >= 20}
       >
