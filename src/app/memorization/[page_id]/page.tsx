@@ -89,38 +89,59 @@ const MemorizationPage = () => {
         Hafalan Halaman {pageId}
       </h1>
 
+
       {displayedIndices.map((index, idx) => {
-          const isCompleted = completedAyahs.includes(index);
-          return (
+        const currentAyah = ayahs[index];
+        const isCompleted = completedAyahs.includes(index);
+        
+        // Cek apakah ini ayat pertama dari surah baru
+        const isFirstAyahOfSurah =
+          index === 0 ||
+          ayahs[index].surah.nomor !== ayahs[displayedIndices[idx - 1]]?.surah.nomor;
+        
+        return (
+          <div key={index}>
+            {isFirstAyahOfSurah && (
+              <h3 className="text-2xl font-bold text-center my-8">
+                Surah {currentAyah.surah.nama_latin} ({currentAyah.surah.nama}) — Ayat {currentAyah.ayat.number.inSurah} -{' '}
+                {
+                  // Cari ayat terakhir dari surah ini di halaman
+                  ayahs
+                    .filter((a) => a.surah.nomor === currentAyah.surah.nomor)
+                    .slice(-1)[0]?.ayat.number.inSurah
+                }
+              </h3>
+            )}
+
             <div
-              key={index}
-              className={`shadow-lg rounded-lg p-6 mb-4 font-arabic ${lpmqFont.className}
-                ${isCompleted ? 'bg-sky-100 animate-check' : 'bg-white'}`}
+              className={`shadow-lg rounded-lg p-6 mb-4 font-arabic ${lpmqFont.className} ${
+                isCompleted ? 'bg-sky-100 animate-check' : 'bg-white'
+              }`}
             >
-              {/* Bismillah */}
-              {ayahs[index].ayat.number.inSurah === 1 && ayahs[index].surah.nomor !== 1 && (
-                <div className="text-center text-4xl mb-6">
-                  بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                </div>
-              )}
+              {currentAyah.ayat.number.inSurah === 1 &&
+                currentAyah.surah.nomor !== 1 &&
+                currentAyah.surah.nomor !== 9 && (
+                  <div className="text-center text-4xl mb-6">
+                    بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْم
+                  </div>
+                )}
 
               <div className="text-[2rem] text-right leading-loose">
                 <span>
-                  <HighlightText
-                    text={ayahs[index].ayat.arab}
-                    highlight={''} // tidak perlu highlight karena kita pakai latar
-                  />
+                  <HighlightText text={currentAyah.ayat.arab} highlight={''} />
                 </span>
                 <span className="text-5xl align-center mr-4">
-                  {numLatinToArabic(ayahs[index].ayat.number.inSurah)}
+                  {numLatinToArabic(currentAyah.ayat.number.inSurah)}
                 </span>
               </div>
-            
-              <p className="text-lg text-gray-600 italic mt-2">{ayahs[index].ayat.latin}</p>
-              <p className="text-xl">{ayahs[index].ayat.translation}</p>
+              
+              <p className="text-lg text-gray-600 italic mt-2">{currentAyah.ayat.latin}</p>
+              <p className="text-xl">{currentAyah.ayat.translation}</p>
             </div>
-          );
+          </div>
+        );
       })}
+
 
 
       <div className="flex items-center justify-between mt-6">

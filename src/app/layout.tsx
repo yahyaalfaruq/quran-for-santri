@@ -15,9 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Aplikasi Hafalan Qur'an Santri - Hafal 30 Juz dalam 2 Tahun Tanpa Stres!",
   description: "Teknik menghafal Al-Qur'an terstruktur khusus santri! Gabungan metode talaqqi & teknologi AI untuk percepat hafalan. Buktikan sendiri!",
-  icons: {
-    icon: "../../public/favicon-32x32.png", // Atau bisa juga "/favicon.png"
-  },
+  icons: "/favicon-32x32.png",
 };
 
 export default function RootLayout({
