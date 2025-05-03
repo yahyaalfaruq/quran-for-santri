@@ -3,22 +3,30 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import AyahDisplay from "./components/AyahDisplay";
-import { ms } from "date-fns/locale";
 import ConfirmReadButton from "./components/ConfirmReadButton";
 import StartMemorizationButton from "./components/StartMemorizationButton";
 import { toast } from 'sonner';
 
 interface Ayah {
-  number: {
-    inQuran: number;
-    inSurah: number;
+  ayat: {
+    arab: string;
+    latin: string;
+    translation: string;
+    number: {
+      inQuran: number;
+      inSurah: number;
+    };
   };
-  text: string;
-  translation: string;
+  surah: {
+    jumlah_ayat: number;
+    nama: string;
+    nama_latin: string;
+    nomor: number;
+  };
 }
 
 const Page = () => {
-  const params = useParams();  // Mengambil params dengan useParams
+  const params = useParams(); // Mengambil params dengan useParams
   const page_id = params?.page_id as string;
 
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
@@ -26,9 +34,8 @@ const Page = () => {
   const [error, setError] = useState<string | null>(null);
   const [readCount, setReadCount] = useState<number>(0);
   const [hasShownInstruction, setHasShownInstruction] = useState(false); // 🆕
-
-  // const [instruction, setInstruction] = useState<boolean>(true);
-
+  const [completedAyahs, setCompletedAyahs] = useState<number[]>([]); // Track completed ayahs
+  
   useEffect(() => {
     const fetchPageData = async () => {
       try {
@@ -67,22 +74,10 @@ const Page = () => {
         const result = await response.json();
 
         // Map and set ayahs
-        const fetchedAyahs = result.data.map((ayah: any) => ({
-          number: {
-            inQuran: ayah.ayat?.number?.inQuran || 0,
-            inSurah: ayah.ayat?.number?.inSurah || 0,
-          },
-          text: ayah.ayat?.arab || "",
-          translation: ayah.ayat?.translation || "",
-          surah: {
-            nomor: ayah.ayat?.surah?.number || 0,
-          },
-        }));
-        
 
-        setAyahs(fetchedAyahs);
+        setAyahs(result.data);
         setLoading(false);
-        console.log(fetchedAyahs)
+        // console.log(fetchedAyahs);
       } catch (error) {
         console.error("Error:", error);
         setError("Terjadi kesalahan saat memuat halaman.");
@@ -93,18 +88,10 @@ const Page = () => {
     fetchPageData();
   }, [page_id]);
 
-  // useEffect(() => {
-  //   if (instruction) {
-  //     setTimeout(() => {alert("Bacalah halaman ini sebanyak 3x!")}, 2000);
-  //     instruction = false;
-  //   }
-  // }, []);
-
-  // 🆕 Alert langsung muncul setelah loading selesai
   useEffect(() => {
     if (!loading && !error && !hasShownInstruction) {
       toast("⭐ Bacalah halaman ini sebanyak 3x!", {
-        description: "", // atau bisa kamu isi tambahan penjelasan
+        description: "",
         style: {
           background: '#f0f9ff',
           color: '#0369a1',
@@ -117,7 +104,6 @@ const Page = () => {
         action: (
           <button
             onClick={() => {
-              // Tutup toast saat tombol diklik
               toast.dismiss();
             }}
             className="bg-blue-600 text-white font-bold text-[0.7rem] rounded-lg px-1 py-1 hover:bg-blue-700 transition-colors"
@@ -134,20 +120,45 @@ const Page = () => {
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!ayahs.length) return <p className="text-center">Tidak ada ayat untuk halaman ini.</p>;
 
+  // Menampilkan ayat dan judul surah pertama kali pada halaman
+  const displayedIndices = ayahs.map((_, idx) => idx);
+
   return (
     <div className="p-8 relative">
-      <div className="absolute w-screen h-screen ">
-
-      </div>
       <h1 className="text-5xl font-bold mb-4 text-center">Halaman {page_id}</h1>
       <div className="space-y-6">
-          <AyahDisplay
-            ayahs={ayahs}
-          />
+          {ayahs.map((currentAyah, index) => {
+            const isCompleted = completedAyahs.includes(index);
+            const previousAyah = ayahs[index - 1];
+          
+            const isNewSurah =
+              index === 0 || currentAyah.surah.nomor !== previousAyah?.surah.nomor;
+          
+            const lastAyahInThisSurah = ayahs
+              .filter((a) => a.surah.nomor === currentAyah.surah.nomor)
+              .slice(-1)[0]?.ayat.number.inSurah;
+          
+            return (
+              <div key={index}>
+                {isNewSurah && (
+                  <h3 className="text-2xl font-bold text-center my-8">
+                    Surah {currentAyah.surah.nama_latin} ({currentAyah.surah.nama}) — 
+                    {/* Cek jika hanya ada satu ayat di halaman */}
+                    {ayahs.length === 1
+                      ? currentAyah.ayat.number.inSurah
+                      : `Ayat ${currentAyah.ayat.number.inSurah} - ${lastAyahInThisSurah}`}
+                  </h3>
+                )}
+
+                <AyahDisplay ayah={currentAyah} />
+              </div>
+            );
+          })}
       </div>
+
       <div>
-          <ConfirmReadButton pageId={page_id} readCount={readCount} setReadCount={setReadCount} />
-          <StartMemorizationButton pageId={page_id} readCount={readCount} />
+        <ConfirmReadButton pageId={page_id} readCount={readCount} setReadCount={setReadCount} />
+        <StartMemorizationButton pageId={page_id} readCount={readCount} />
       </div>
     </div>
   );
