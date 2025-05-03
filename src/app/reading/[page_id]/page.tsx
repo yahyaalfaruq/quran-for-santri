@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import AyahDisplay from "./components/AyahDisplay";
 import ConfirmReadButton from "./components/ConfirmReadButton";
 import StartMemorizationButton from "./components/StartMemorizationButton";
-import { toast } from 'sonner';
+import InstructionModal from "./components/InstructionModal";
 
 interface Ayah {
   ayat: {
@@ -36,7 +36,8 @@ const Page = () => {
   const [hasShownInstruction, setHasShownInstruction] = useState(false); // 🆕
   const [completedAyahs, setCompletedAyahs] = useState<number[]>([]); // Track completed ayahs
   const [showTranslation, setShowTranslation] = useState(true);
-  
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     const fetchPageData = async () => {
       try {
@@ -91,28 +92,29 @@ const Page = () => {
 
   useEffect(() => {
     if (!loading && !error && !hasShownInstruction) {
-      toast("⭐ Bacalah halaman ini sebanyak 3x!", {
-        description: "",
-        style: {
-          background: '#f0f9ff',
-          color: '#0369a1',
-          fontWeight: 'bold',
-          border: '1px solid #bae6fd',
-          padding: '1rem',
-          fontSize: '1rem',
-        },
-        duration: Infinity,
-        action: (
-          <button
-            onClick={() => {
-              toast.dismiss();
-            }}
-            className="bg-blue-600 text-white font-bold text-[0.7rem] rounded-lg px-1 py-1 hover:bg-blue-700 transition-colors"
-          >
-            Oke
-          </button>
-        ),
-      });
+      // toast("⭐ Bacalah halaman ini sebanyak 3x!", {
+      //   description: "",
+      //   style: {
+      //     background: '#f0f9ff',
+      //     color: '#0369a1',
+      //     fontWeight: 'bold',
+      //     border: '1px solid #bae6fd',
+      //     padding: '1rem',
+      //     fontSize: '1rem',
+      //   },
+      //   duration: Infinity,
+      //   action: (
+      //     <button
+      //       onClick={() => {
+      //         toast.dismiss();
+      //       }}
+      //       className="bg-blue-600 text-white font-bold text-[0.7rem] rounded-lg px-1 py-1 hover:bg-blue-700 transition-colors"
+      //     >
+      //       Oke
+      //     </button>
+      //   ),
+      // });
+      setShowModal(true);
       setHasShownInstruction(true);
     }
   }, [loading, error, hasShownInstruction]);
@@ -182,6 +184,8 @@ const Page = () => {
         <ConfirmReadButton pageId={page_id} readCount={readCount} setReadCount={setReadCount} />
         <StartMemorizationButton pageId={page_id} readCount={readCount} />
       </div>
+
+      {<InstructionModal isOpen={showModal} onClose={() => setShowModal(false)} />}
     </div>
   );
 };

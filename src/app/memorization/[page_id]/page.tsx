@@ -5,9 +5,6 @@ import HighlightText from './components/HighlightText';
 import Counter from './components/Counter';
 import InstructionModal from './components/InstructionModal';
 
-/*import toast from 'react-hot-toast'; // tambahkan di atas (npm install react-hot-toast, ada juga yang diubah di layout.tsx)*/
-import { toast } from 'sonner';
-
 
 import localFont from 'next/font/local';
 
@@ -92,38 +89,7 @@ const MemorizationPage = () => {
   // 🆕 Alert langsung muncul setelah loading selesai
   useEffect(() => {
     if (!loading && !error && !hasShownInstruction) {
-      // toast("Bacalah halaman ini sebanyak 3x!", {
-      //   style: {
-      //     background: '#f0f9ff',
-      //     color: '#0369a1',
-      //     fontWeight: 'bold',
-      //   },
-      //   icon: '⭐',
-      // });
-      // setShowModal(true);
-      toast("⭐ Bacalah halaman ini sebanyak 20x!", {
-        description: "", // atau bisa kamu isi tambahan penjelasan
-        style: {
-          background: '#f0f9ff',
-          color: '#0369a1',
-          fontWeight: 'bold',
-          border: '1px solid #bae6fd',
-          padding: '1rem',
-          fontSize: '1rem',
-        },
-        duration: Infinity,
-        action: (
-          <button
-            onClick={() => {
-              // Tutup toast saat tombol diklik
-              toast.dismiss();
-            }}
-            className="bg-blue-600 text-white font-bold text-[0.7rem] rounded-lg px-1 py-1 hover:bg-blue-700 transition-colors"
-          >
-            Oke
-          </button>
-        ),
-      });
+      setShowModal(true);
       setHasShownInstruction(true);
     }
   }, [loading, error, hasShownInstruction]);
@@ -212,7 +178,7 @@ const MemorizationPage = () => {
           Lanjut Ayat
         </button>
       </div>
-      {/* {<InstructionModal isOpen={showModal} onClose={() => setShowModal(false)} />} */}
+      {<InstructionModal isOpen={showModal} onClose={() => setShowModal(false)} />}
 
     </div>
   );

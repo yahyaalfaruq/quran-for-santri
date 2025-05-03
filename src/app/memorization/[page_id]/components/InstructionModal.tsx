@@ -11,11 +11,11 @@ const InstructionModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-lg">
-        <h2 className="text-xl font-bold mb-4 text-center">📖 Instruksi</h2>
-        <p className="text-gray-700 text-center mb-6">
-          Bacalah halaman ini sebanyak <span className="font-semibold">3x</span> sebelum melanjutkan ke hafalan!
+    <div className="fixed inset-0 z-50 bg-white/30 bg-opacity-80 backdrop-blur-sm flex items-center justify-center px-4">
+      <div className=" bg-sky-50 rounded-lg p-6 max-w-md w-full shadow-lg">
+        <h2 className="text-xl text-sky-700 font-bold mb-4 text-center">⭐ Instruksi</h2>
+        <p className="text-sky-700 text-center mb-6">
+          Bacalah halaman ini sebanyak <span className="font-semibold">20x</span> sebelum melanjutkan ke hafalan!
         </p>
         <div className="flex justify-center">
           <button
