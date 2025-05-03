@@ -1,3 +1,5 @@
+import { FiPlusCircle } from "react-icons/fi";
+
 interface CounterProps {
   count: number;
   setCount: React.Dispatch<React.SetStateAction<number>>;
@@ -20,7 +22,7 @@ export default function Counter({ count, setCount, onCountComplete }: CounterPro
     <div className="flex flex-col items-center">
       <p className="text-lg font-bold">Hitungan: {count}/20</p>
       <button
-        className={`px-4 py-2 rounded-lg mt-2 transition font-semibold ${
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg mt-2 transition font-semibold ${
           count >= 20
             ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
             : 'bg-blue-600 text-white hover:bg-blue-700'
@@ -28,7 +30,7 @@ export default function Counter({ count, setCount, onCountComplete }: CounterPro
         onClick={incrementCount}
         disabled={count >= 20}
       >
-        Tambah Hitungan
+        Tambah Hitungan <FiPlusCircle className="text-xl" /> 
       </button>
     </div>
   );

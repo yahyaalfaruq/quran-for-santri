@@ -7,6 +7,8 @@ import InstructionModal from './components/InstructionModal';
 
 
 import localFont from 'next/font/local';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { MdFullscreen, MdFullscreenExit, MdNavigateNext } from 'react-icons/md';
 
 const lpmqFont = localFont({
   src: '../../../fonts/LPMQ IsepMisbah.ttf',
@@ -41,7 +43,9 @@ const MemorizationPage = () => {
   const [completedAyahs, setCompletedAyahs] = useState<number[]>([]); 
   const [hasShownInstruction, setHasShownInstruction] = useState(false); // 🆕
   const [error, setError] = useState<string | null>(null);
+  const [showTranslation, setShowTranslation] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const router = useRouter();
 
@@ -94,6 +98,12 @@ const MemorizationPage = () => {
     }
   }, [loading, error, hasShownInstruction]);
 
+  useEffect(() => {
+    const handleChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", handleChange);
+    return () => document.removeEventListener("fullscreenchange", handleChange);
+  }, []);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -111,6 +121,24 @@ const MemorizationPage = () => {
       </h1>
 
       <button
+        onClick={() => setShowTranslation((prev) => !prev)}
+        className="mb-6 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition flex items-center gap-2"
+      >
+        {showTranslation ? (
+          <>
+            <FiEyeOff className="text-xl" />
+            Sembunyikan Arti & Latin
+          </>
+        ) : (
+          <>
+            <FiEye className="text-xl" />
+            Tampilkan Arti & Latin
+          </>
+        )}
+      </button>
+
+
+      <button
         onClick={() => {
           const elem = document.documentElement;
           if (!document.fullscreenElement) {
@@ -118,10 +146,10 @@ const MemorizationPage = () => {
           } else {
             document.exitFullscreen();
           }
-          }}
-          className="fixed bottom-4 right-4 px-4 py-2 bg-yellow-500 text-white font-bold rounded-lg shadow-lg hover:bg-yellow-600 transition"
+        }}
+        className="fixed bottom-4 right-4 p-3 bg-yellow-500 text-white rounded-full shadow-lg hover:bg-yellow-600 transition"
       >
-        Toggle Fullscreen
+        {isFullscreen ? <MdFullscreenExit size={24} /> : <MdFullscreen size={24} />}
       </button>
 
 
@@ -169,9 +197,14 @@ const MemorizationPage = () => {
                   {numLatinToArabic(currentAyah.ayat.number.inSurah)}
                 </span>
               </div>
+
+              {showTranslation && (
+              <>
+                <p className="text-lg text-gray-600 italic mt-2">{currentAyah.ayat.latin}</p>
+                <p className="text-xl">({currentAyah.ayat.number.inSurah}) {currentAyah.ayat.translation}</p>
+              </>
+              )}
               
-              <p className="text-lg text-gray-600 italic mt-2">{currentAyah.ayat.latin}</p>
-              <p className="text-xl">({currentAyah.ayat.number.inSurah}) {currentAyah.ayat.translation}</p>
             </div>
           </div>
         );
@@ -179,7 +212,7 @@ const MemorizationPage = () => {
 
 
 
-      <div className="flex items-center justify-between mt-6">
+      <div className="flex items-end justify-between mt-6">
         <Counter count={count} 
                  setCount={setCount} 
                  onCountComplete={() => {setCompletedAyahs([...completedAyahs, currentIndex]);}}
@@ -189,13 +222,13 @@ const MemorizationPage = () => {
         <button
           onClick={handleNextAyah}
           disabled={count < 20}
-          className={`px-6 py-3 rounded-lg transition ${
+          className={`flex items-center px-4 py-3 rounded-lg transition ${
             count >= 20
               ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+              : 'bg-gray-400 text-gray-200 hover:bg-gray-400 cursor-not-allowed'
           }`}
         >
-          Lanjut Ayat
+            Lanjut Ayat <MdNavigateNext className="text-2xl" /> 
         </button>
       </div>
       {<InstructionModal isOpen={showModal} onClose={() => setShowModal(false)} />}
