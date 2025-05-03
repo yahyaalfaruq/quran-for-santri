@@ -11,6 +11,7 @@ import {
   FaBookOpen,
   FaBook,
 } from "react-icons/fa6";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const lpmqFont = localFont({
   src: "../../../../fonts/LPMQ IsepMisbah.ttf",
@@ -117,7 +118,7 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
             onClick={toggleReadingMode}
             className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition"
           >
-            {isReadingMode ? <FaBookOpen size={18} /> : <FaBook size={18} />}
+            {isReadingMode ? <FiEyeOff size={18} /> : <FiEye size={18} />}
           </button>
         </div>
 

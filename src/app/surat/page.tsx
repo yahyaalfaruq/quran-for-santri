@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { GiHamburgerMenu, GiCrossMark } from "react-icons/gi";
-import { FiSearch } from "react-icons/fi";
+import { FiMoon, FiSearch, FiSun } from "react-icons/fi";
 import localFont from "next/font/local";
 
 const lpmqFont = localFont({
@@ -19,11 +19,25 @@ interface Surah {
   arti: string;
 }
 
-export default function Home() {
+export default function Page() {
   const [surahs, setSurahs] = useState<Surah[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme") || "light";
+    setTheme(storedTheme);
+    document.documentElement.classList.toggle("dark", storedTheme === "dark");
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
 
   useEffect(() => {
     fetch(
@@ -46,15 +60,10 @@ export default function Home() {
 
   const filteredSurahs = useMemo(() => {
     if (!searchQuery) return surahs;
-    
     const query = searchQuery.toLowerCase();
-    
-    // Check if search query is a number
     if (!isNaN(Number(query))) {
-      return surahs.filter(surah => surah.nomor === Number(query));
+      return surahs.filter((surah) => surah.nomor === Number(query));
     }
-    
-    // For non-number searches, search in name, arabic name, and meaning
     return surahs.filter(
       (surah) =>
         surah.nama_latin.toLowerCase().includes(query) ||
@@ -82,34 +91,25 @@ export default function Home() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex gap-3">
-          <Link
-            className="text-white font-bold hover:text-blue-800"
-            href="/juz"
+          <button
+            onClick={toggleTheme}
+            className="text-white font-bold hover:text-blue-800 ml-4"
           >
+            {theme === "light" ? <FiMoon size={20} /> : <FiSun size={20} />}
+          </button>
+          <Link className="text-white font-bold hover:text-blue-800" href="/juz">
             Per Juz
           </Link>
-          <Link
-            className="text-white font-bold hover:text-blue-800"
-            href="/shalat"
-          >
+          <Link className="text-white font-bold hover:text-blue-800" href="/shalat">
             Jadwal Shalat
           </Link>
-          <Link
-            className="text-white font-bold hover:text-blue-800"
-            href="/onboarding"
-          >
+          <Link className="text-white font-bold hover:text-blue-800" href="/onboarding">
             Program Hafalan
           </Link>
-          <Link
-            className="text-white font-bold hover:text-blue-800"
-            href="/page"
-          >
+          <Link className="text-white font-bold hover:text-blue-800" href="/page">
             Pages
           </Link>
-          <Link
-            className="text-white font-bold hover:text-blue-800"
-            href="/about"
-          >
+          <Link className="text-white font-bold hover:text-blue-800" href="/about">
             About
           </Link>
         </div>
@@ -118,39 +118,19 @@ export default function Home() {
         {isMenuOpen && (
           <div className="absolute top-full left-0 right-0 bg-blue-300 shadow-md md:hidden z-10">
             <div className="flex flex-col p-4 space-y-3">
-              <Link
-                className="text-white font-bold hover:text-blue-800 p-2"
-                href="/juz"
-                onClick={toggleMenu}
-              >
+              <Link href="/juz" className="text-white font-bold hover:text-blue-800 p-2" onClick={toggleMenu}>
                 Per Juz
               </Link>
-              <Link
-                className="text-white font-bold hover:text-blue-800 p-2"
-                href="/shalat"
-                onClick={toggleMenu}
-              >
+              <Link href="/shalat" className="text-white font-bold hover:text-blue-800 p-2" onClick={toggleMenu}>
                 Jadwal Shalat
               </Link>
-              <Link
-                className="text-white font-bold hover:text-blue-800 p-2"
-                href="/onboarding"
-                onClick={toggleMenu}
-              >
+              <Link href="/onboarding" className="text-white font-bold hover:text-blue-800 p-2" onClick={toggleMenu}>
                 Program Hafalan
               </Link>
-              <Link
-                className="text-white font-bold hover:text-blue-800 p-2"
-                href="/page"
-                onClick={toggleMenu}
-              >
+              <Link href="/page" className="text-white font-bold hover:text-blue-800 p-2" onClick={toggleMenu}>
                 Pages
               </Link>
-              <Link
-                className="text-white font-bold hover:text-blue-800 p-2"
-                href="/about"
-                onClick={toggleMenu}
-              >
+              <Link href="/about" className="text-white font-bold hover:text-blue-800 p-2" onClick={toggleMenu}>
                 About
               </Link>
             </div>
@@ -164,7 +144,7 @@ export default function Home() {
           <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6">
             Daftar Surah Al-Quran
           </h1>
-          
+
           {/* Search Bar */}
           <div className="relative max-w-md mx-auto mb-8">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -186,7 +166,7 @@ export default function Home() {
               </button>
             )}
           </div>
-          
+
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
@@ -209,18 +189,14 @@ export default function Home() {
                             <span className="text-xl font-semibold text-gray-800">
                               {surah.nama_latin}
                             </span>
-                            <p className="text-sm text-gray-600 mt-1">
-                              {surah.arti}
-                            </p>
+                            <p className="text-sm text-gray-600 mt-1">{surah.arti}</p>
                           </div>
                         </div>
                         <div className="flex flex-col-reverse">
                           <span className="text-sm text-gray-500 mt-1">
                             {surah.jumlah_ayat} ayat
                           </span>
-                          <p
-                            className={`text-xl font-semibold ${lpmqFont.className}`}
-                          >
+                          <p className={`text-xl font-semibold ${lpmqFont.className}`}>
                             {surah.nama}
                           </p>
                         </div>
@@ -230,7 +206,9 @@ export default function Home() {
                 ))
               ) : (
                 <div className="col-span-full text-center py-10">
-                  <p className="text-gray-500 text-lg">Tidak ada surah yang ditemukan</p>
+                  <p className="text-gray-500 text-lg">
+                    Tidak ada surah yang ditemukan
+                  </p>
                 </div>
               )}
             </ul>

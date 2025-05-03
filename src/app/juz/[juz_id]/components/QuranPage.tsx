@@ -223,27 +223,27 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
         </div>
       </div>
 
-      {/* Konten Ayat */}
-      <div className="container mx-auto px-4 py-6 max-w-3xl">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+      {/* Konten Ayat - Full Width */}
+      <div className="w-full px-0 py-6">
+        <div className="bg-white">
           {surahGroups.map((group, groupIndex) => (
             <div
               key={groupIndex}
               className="border-b border-blue-50 last:border-b-0"
             >
               {/* Surah name header */}
-              <div className="p-4">
-                <h2 className="text-2xl font-semibold text-blue-800 text-center">
+              <div className="p-6 text-center">
+                <h2 className="text-2xl font-semibold text-blue-800">
                   Surah {group.surah.name}
                 </h2>
               </div>
 
               {/* Show Bismillah for every surah except Surah 9 (At-Taubah) and Surah 1 (Al-Fatihah) */}
               {group.surah.number !== 9 && group.ayahs[0].number === 1 && (
-                <div className="p-5 border-b border-blue-50">
+                <div className="p-6 border-b border-blue-50">
                   <div className="flex justify-center">
                     <div
-                      className={`text-center text-2xl ${lpmqFont.className}`}
+                      className={`text-center text-3xl ${lpmqFont.className}`}
                     >
                       بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
                     </div>
@@ -258,26 +258,26 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
               {group.ayahs.map((ayah, ayahIndex) => (
                 <div
                   key={ayahIndex}
-                  className="p-5 hover:bg-blue-50 transition-colors"
+                  className="p-6 hover:bg-blue-50 transition-colors"
                 >
-                  <div className="flex items-start">
-                    <div className="bg-blue-100 text-blue-800 rounded-lg w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0">
+                  <div className="flex items-start max-w-6xl mx-auto">
+                    <div className="bg-blue-100 text-blue-800 rounded-lg w-12 h-12 flex items-center justify-center mr-6 flex-shrink-0 text-lg">
                       {ayah.number}
                     </div>
-                    <div className="flex-1 space-y-3">
-                      {/* Teks Arab */}
+                    <div className="flex-1 space-y-4">
+                      {/* Teks Arab - Full width */}
                       <div
-                        className={`text-right text-2xl ${lpmqFont.className} leading-loose`}
+                        className={`text-right text-3xl ${lpmqFont.className} leading-loose`}
                       >
                         {ayah.text}
                       </div>
                       {/* Latin & Terjemahan - Only if not in reading mode */}
                       {!isReadingMode && (
                         <>
-                          <div className="text-gray-700 text-base italic">
+                          <div className="text-gray-700 text-lg italic">
                             {ayah.latin}
                           </div>
-                          <div className="text-gray-600 text-sm">
+                          <div className="text-gray-600 text-base">
                             {ayah.translation}
                           </div>
                         </>
@@ -293,7 +293,7 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
 
               {/* Spacer between surahs */}
               {groupIndex < surahGroups.length - 1 && (
-                <div className="h-8 bg-blue-50"></div>
+                <div className="h-10 bg-blue-50"></div>
               )}
             </div>
           ))}
