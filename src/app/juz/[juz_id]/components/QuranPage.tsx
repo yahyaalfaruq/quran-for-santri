@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import localFont from "next/font/local";
 import {
   FiChevronLeft,
   FiChevronRight,
   FiRefreshCw,
-  FiArrowLeftCircle,
   FiAlertCircle,
   FiBookOpen,
   FiBook,
 } from "react-icons/fi";
+import { FaArrowLeft, FaArrowRight, FaArrowLeftLong } from "react-icons/fa6";
 
 const lpmqFont = localFont({
   src: "../../../../fonts/LPMQ IsepMisbah.ttf",
@@ -105,12 +106,38 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
     fetchJuzData();
   }, [juz_id]);
 
+  const navigateToJuz = (juzId: number) => {
+    if (juzId >= 1 && juzId <= 30) {
+      router.push(`/juz/${juzId}`);
+    }
+  };
+
+  const toggleReadingMode = () => {
+    setIsReadingMode(!isReadingMode);
+  };
+
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
-  if (error || !juzData) {
-    return <ErrorDisplay message={error || "Data tidak tersedia"} />;
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <p className="text-red-500 text-lg">{error}</p>
+      </div>
+    );
+  }
+
+  if (!juzData) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <p className="text-gray-700 text-lg">Tidak ada data yang ditemukan</p>
+      </div>
+    );
   }
 
   const groupAyahsBySurah = (ayahs: Ayah[]) => {
@@ -152,63 +179,30 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
   };
 
   const juzRange = juzData ? getJuzRangeInfo(juzData.ayahs) : null;
+  const currentJuzNumber = juzData.juz;
+  const hasPreviousJuz = currentJuzNumber > 1;
+  const hasNextJuz = currentJuzNumber < 30;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-30 to-blue-50 relative">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-blue-300 text-white py-4 sticky top-0 z-50">
-        <div className="container mx-auto px-4">
-          {/* Top Row - Navigation */}
-          <div className="flex justify-between items-center mb-2">
-            {/* Back Button */}
-            <button
-              onClick={() => router.push("/juz")}
-              className="bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors"
-            >
-              <FiArrowLeftCircle className="text-white text-xl" />
+      <div className="bg-blue-300 sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          {/* Back Button */}
+          <Link href="/juz">
+            <button className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition">
+              <FaArrowLeft size={18} />
+              <span className="hidden sm:inline">Kembali</span>
             </button>
-
-            {/* Juz Navigation */}
-            <div className="flex items-center gap-2">
-              {juzData.juz > 1 && (
-                <button
-                  onClick={() => router.push(`/juz/${juzData.juz - 1}`)}
-                  className="flex items-center bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors"
-                >
-                  <FiChevronLeft className="mr-1" />
-                  <span className="text-sm">Juz {juzData.juz - 1}</span>
-                </button>
-              )}
-
-              {juzData.juz < 30 && (
-                <button
-                  onClick={() => router.push(`/juz/${juzData.juz + 1}`)}
-                  className="flex items-center bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors"
-                >
-                  <span className="text-sm">Juz {juzData.juz + 1}</span>
-                  <FiChevronRight className="ml-1" />
-                </button>
-              )}
-            </div>
-
-            {/* Reading Mode Button */}
-            <button
-              onClick={() => setIsReadingMode(!isReadingMode)}
-              className="bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors"
-            >
-              {isReadingMode ? (
-                <FiBookOpen className="text-white text-xl" />
-              ) : (
-                <FiBook className="text-white text-xl" />
-              )}
-            </button>
-          </div>
+          </Link>
 
           {/* Juz Info */}
           <div className="text-center">
-            <h1 className="text-xl md:text-2xl font-bold">Juz {juzData.juz}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-800">
+              <span className="text-white">Juz</span> {currentJuzNumber}
+            </h1>
             {juzRange && (
-              <p className="text-xs md:text-sm text-white/90">
+              <p className="text-xs sm:text-sm text-gray-600">
                 Surah {juzRange.startSurah} ayat {juzRange.startAyah} sampai{" "}
                 {juzRange.startSurah === juzRange.endSurah ? (
                   <>ayat {juzRange.endAyah}</>
@@ -220,80 +214,110 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
               </p>
             )}
           </div>
+
+          {/* Reading Mode Button */}
+          <button
+            onClick={toggleReadingMode}
+            className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition"
+          >
+            {isReadingMode ? <FiBookOpen size={18} /> : <FiBook size={18} />}
+          </button>
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="container mx-auto px-4 pb-4 flex justify-center gap-4">
+          {hasPreviousJuz && (
+            <button
+              onClick={() => navigateToJuz(currentJuzNumber - 1)}
+              className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition"
+              title="Juz sebelumnya"
+            >
+              <FaArrowLeftLong size={18} />
+              <span className="hidden sm:inline">Juz Sebelumnya</span>
+            </button>
+          )}
+          
+          {hasNextJuz && (
+            <button
+              onClick={() => navigateToJuz(currentJuzNumber + 1)}
+              className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition"
+              title="Juz berikutnya"
+            >
+              <span className="hidden sm:inline">Juz Berikutnya</span>
+              <FaArrowRight size={18} />
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Konten Ayat - Full Width */}
-      <div className="w-full px-0 py-6">
-        <div className="bg-white">
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-6">
+        <div className="space-y-4">
           {surahGroups.map((group, groupIndex) => (
             <div
               key={groupIndex}
-              className="border-b border-blue-50 last:border-b-0"
+              className="bg-white rounded-lg shadow-sm p-5 hover:shadow-md transition-shadow duration-200"
             >
-              {/* Surah name header */}
-              <div className="p-6 text-center">
-                <h2 className="text-2xl font-semibold text-blue-800">
-                  Surah {group.surah.name}
+              {/* Surah Header */}
+              <div className="text-center my-6">
+                <h2 className="text-xl font-bold text-blue-800 mb-2">
+                  {group.surah.name}
                 </h2>
-              </div>
-
-              {/* Show Bismillah for every surah except Surah 9 (At-Taubah) and Surah 1 (Al-Fatihah) */}
-              {group.surah.number !== 9 && group.ayahs[0].number === 1 && (
-                <div className="p-6 border-b border-blue-50">
-                  <div className="flex justify-center">
-                    <div
-                      className={`text-center text-3xl ${lpmqFont.className}`}
-                    >
-                      بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
+                <p className="text-blue-600 mb-4">
+                  {group.surah.number !== 1 && group.surah.number !== 9 && (
+                    <div className="mb-4">
+                      <p
+                        className={`text-center text-3xl font-arabic ${lpmqFont.className} text-gray-800`}
+                      >
+                        بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
+                      </p>
+                      {!isReadingMode && (
+                        <p className="text-sm italic text-gray-600 mt-2">
+                          Bismillahirrahmanirrahim
+                        </p>
+                      )}
                     </div>
-                  </div>
-                  <div className="text-center text-gray-600 italic mt-2">
-                    Bismillahirrahmanirrahim
-                  </div>
-                </div>
-              )}
+                  )}
+                </p>
+              </div>
 
               {/* Ayahs */}
               {group.ayahs.map((ayah, ayahIndex) => (
                 <div
                   key={ayahIndex}
-                  className="p-6 hover:bg-blue-50 transition-colors"
+                  className="mb-6 last:mb-0"
                 >
-                  <div className="flex items-start max-w-6xl mx-auto">
-                    <div className="bg-blue-100 text-blue-800 rounded-lg w-12 h-12 flex items-center justify-center mr-6 flex-shrink-0 text-lg">
-                      {ayah.number}
-                    </div>
-                    <div className="flex-1 space-y-4">
-                      {/* Teks Arab - Full width */}
-                      <div
-                        className={`text-right text-3xl ${lpmqFont.className} leading-loose`}
-                      >
-                        {ayah.text}
-                      </div>
-                      {/* Latin & Terjemahan - Only if not in reading mode */}
-                      {!isReadingMode && (
-                        <>
-                          <div className="text-gray-700 text-lg italic">
-                            {ayah.latin}
-                          </div>
-                          <div className="text-gray-600 text-base">
-                            {ayah.translation}
-                          </div>
-                        </>
-                      )}
-                      {/* Info Surah */}
-                      <div className="text-sm text-gray-400 text-right">
-                        {ayah.surah.name}:{ayah.number}
-                      </div>
-                    </div>
+                  {/* Ayah Number */}
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="p-2 text-xl border-image-custom flex items-center justify-center w-15 h-10">
+                      {ayah.number}.
+                    </span>
                   </div>
+
+                  {/* Arabic Text */}
+                  <p
+                    className={`text-right text-3xl font-arabic ${lpmqFont.className} text-gray-800 mb-4`}
+                  >
+                    {ayah.text}
+                  </p>
+
+                  {/* Latin and Translation */}
+                  {!isReadingMode && (
+                    <>
+                      <p className="text-sm italic text-gray-600 mb-2">
+                        {ayah.latin}
+                      </p>
+                      <p className="text-base text-gray-700">
+                        {ayah.translation}
+                      </p>
+                    </>
+                  )}
                 </div>
               ))}
 
               {/* Spacer between surahs */}
               {groupIndex < surahGroups.length - 1 && (
-                <div className="h-10 bg-blue-50"></div>
+                <div className="h-6"></div>
               )}
             </div>
           ))}
@@ -305,11 +329,8 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
 
 // Komponen Loading
 const LoadingSpinner = () => (
-  <div className="min-h-screen flex items-center justify-center bg-blue-50">
-    <div className="text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mx-auto mb-4"></div>
-      <p className="text-blue-800">Memuat data Al-Quran...</p>
-    </div>
+  <div className="flex justify-center items-center min-h-screen bg-gray-50">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
   </div>
 );
 
@@ -320,7 +341,7 @@ interface ErrorDisplayProps {
 }
 
 const ErrorDisplay = ({ message, onRetry }: ErrorDisplayProps) => (
-  <div className="min-h-screen flex items-center justify-center bg-blue-50">
+  <div className="flex justify-center items-center min-h-screen bg-gray-50">
     <div className="bg-white p-8 rounded-xl shadow-md max-w-md text-center">
       <div className="text-red-500 mb-4">
         <FiAlertCircle className="h-12 w-12 mx-auto" />
@@ -342,7 +363,7 @@ const ErrorDisplay = ({ message, onRetry }: ErrorDisplayProps) => (
           onClick={() => (window.location.href = "/juz")}
           className="bg-white text-blue-600 px-6 py-2 rounded-lg shadow-sm border border-blue-200 hover:bg-blue-50 flex items-center justify-center"
         >
-          <FiArrowLeftCircle className="mr-2" /> Kembali
+          <FaArrowLeft className="mr-2" /> Kembali
         </button>
       </div>
     </div>

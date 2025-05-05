@@ -82,10 +82,25 @@ const JadwalShalatPage = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
-        setJadwal(result.data);
-
-        // Hitung shalat saat ini dan berikutnya
-        hitungShalatSekarangDanBerikutnya(result.data.timings);
+        
+        // Modifikasi data untuk set bulan Hijriyah ke Dzul Qa'dah (ذو القعدة)
+        const modifiedData = {
+          ...result.data,
+          date: {
+            ...result.data.date,
+            hijri: {
+              ...result.data.date.hijri,
+              month: {
+                ...result.data.date.hijri.month,
+                ar: "ذو القعدة",
+                en: "Dhu al-Qi'dah"
+              }
+            }
+          }
+        };
+        
+        setJadwal(modifiedData);
+        hitungShalatSekarangDanBerikutnya(modifiedData.timings);
       } catch (error) {
         console.error('Error fetching jadwal shalat:', error);
         setError('Gagal memuat jadwal shalat. Silakan coba lagi.');
@@ -126,7 +141,7 @@ const JadwalShalatPage = () => {
         setShalatBerikutnya(waktuShalat[i].nama);
         setWaktuShalatBerikutnya(waktuShalat[i].waktu.toTimeString().substring(0, 5));
 
-        // Hitung jarak waktu antara shalat saat ini dan berikutnya
+        // Hitung jarak waktu
         if (i > 0) {
           const updateCountdown = () => {
             const sekarang = new Date();
@@ -161,13 +176,6 @@ const JadwalShalatPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Daftar bulan Hijriyah
-  const bulanHijriyah = [
-    "Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani", 
-    "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Sya'ban", 
-    "Ramadan", "Syawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"
-  ];
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-50 to-purple-50">
@@ -200,18 +208,16 @@ const JadwalShalatPage = () => {
       return [newName, waktu];
     });
 
-  // Dapatkan bulan Gregorian dan Hijriyah saat ini
+  // Dapatkan bulan Gregorian dan Hijriyah
   const gregorianDate = new Date();
   const bulanGregorian = gregorianDate.toLocaleString('default', { month: 'long' });
-  const bulanHijri = bulanHijriyah[parseInt(jadwal.date.hijri.month.en) - 1] || jadwal.date.hijri.month.ar;
+  const bulanHijri = jadwal.date.hijri.month.ar; // Menggunakan bahasa Arab (ذو القعدة)
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 p-4 sm:p-6">
-      {/* Container Utama */}
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-6 mb-6 text-center relative">
-          {/* Tombol Kembali */}
           <button 
             onClick={() => router.push('/surat')}
             className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white text-blue-600 hover:bg-blue-100 rounded-full p-2 shadow-md transition-colors duration-200"
@@ -229,7 +235,7 @@ const JadwalShalatPage = () => {
             {jadwal.date.gregorian.day}, {jadwal.date.gregorian.date} {bulanGregorian} {jadwal.date.gregorian.year}
           </p>
           <p className="text-sm text-white">
-            {jadwal.date.hijri.day} {jadwal.date.hijri.date} {bulanHijri} {jadwal.date.hijri.year} H
+            {jadwal.date.hijri.day} {jadwal.date.hijri.date} <span className="font-arabic">{bulanHijri}</span> {jadwal.date.hijri.year} H
           </p>
           <p className="text-sm text-white mt-2">
             Jam Sekarang: <span className="font-bold">{jamSekarang}</span>

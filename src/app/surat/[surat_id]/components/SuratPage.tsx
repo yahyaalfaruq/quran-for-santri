@@ -64,7 +64,7 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
@@ -161,7 +161,7 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
               {isNotAlFatihah && index === 0 && (
                 <div className="mb-4">
                   <p
-                    className={`text-right text-3xl font-arabic ${lpmqFont.className} text-gray-800`}
+                    className={`text-center text-3xl font-arabic ${lpmqFont.className} text-gray-800`}
                   >
                     بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
                   </p>

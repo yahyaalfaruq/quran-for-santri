@@ -78,29 +78,43 @@ const AboutPage = () => {
                 {[
                   {
                     name: "Yahya Al-Faruq",
-                    role: "Backend Developer",
+                    role: "FullStress Developer",
                     contacts: [
                       {
                         icon: <FaGithub />,
-                        url: "https://github.com/gazfath12",
+                        url: "https://github.com/yahyaalfaruq",
                       },
                       {
                         icon: <FaEnvelope />,
-                        url: "mailto:gazfath12@gmail.com",
+                        url: "mailto:jhonelfarq@gmail.com",
                       },
                     ],
                   },
                   {
                     name: "Muhammad Raihan Akram Ramadhan",
-                    role: "UI/UX Designer",
+                    role: "FullStack Developer",
                     contacts: [
                       {
-                        icon: <FaLinkedin />,
-                        url: "https://linkedin.com/in/afiqyunanto",
+                        icon: <FaGithub />,
+                        url: "https://github.com/RaihanAkram08",
                       },
                       {
                         icon: <FaEnvelope />,
-                        url: "mailto:afiqyunanto@gmail.com",
+                        url: "mailto:raihan.of2008@gmail.com",
+                      },
+                    ],
+                  },
+                  {
+                    name: "Raihan Regita Harjuno",
+                    role: "Quality Assurance",
+                    contacts: [
+                      {
+                        icon: <FaGithub />,
+                        url: "https://github.com/Hyansz",
+                      },
+                      {
+                        icon: <FaEnvelope />,
+                        url: "mailto:raihanregita.ppqita@gmail.com",
                       },
                     ],
                   },
@@ -142,7 +156,7 @@ const AboutPage = () => {
                   {
                     title: "Keluarga Kami",
                     content:
-                      "Terimakasih kepada orang tua kami, Bapak Muhammad Takbir, Bapak Ahmad buhari, Ibu Irmawati Lathifah, Ibu Dwi Lestari, dan seluruh keluarga yang selalu memberikan dukungan dan doa.",
+                      "Terimakasih kepada orang tua kami, Bapak Muhammad Takbir, Bapak Ahmad Buhari, Bapak Didik Joko Harjuno, Ibu Irmawati Lathifah, Ibu Marlina, Ibu Dyasati dan seluruh keluarga yang selalu memberikan dukungan dan doa.",
                   },
                   {
                     title: "Para Guru dan Mentor",

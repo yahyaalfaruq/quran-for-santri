@@ -8,12 +8,9 @@ import { motion } from "framer-motion";
 import {
   FiEye,
   FiEyeOff,
-  FiSearch,
-  FiChevronLeft,
-  FiChevronRight,
   FiBookmark,
 } from "react-icons/fi";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaArrowLeftLong } from "react-icons/fa6";
 
 const lpmqFont = localFont({
   src: "../../../../fonts/LPMQ IsepMisbah.ttf",
@@ -76,142 +73,97 @@ const QuranPage = ({ page_no }: { page_no: string }) => {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex items-center justify-center">
-        <div className="text-center">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"
-          />
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-4 text-blue-700 font-medium"
-          >
-            Memuat Halaman...
-          </motion.p>
-        </div>
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
 
   if (!data)
     return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex items-center justify-center">
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="text-center p-6 bg-white rounded-xl shadow-lg max-w-md mx-4"
-        >
-          <p className="text-red-500 font-medium mb-4">
-            Gagal memuat data halaman
-          </p>
-          <Link
-            href="/"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition-colors"
-          >
-            Kembali ke Beranda
-          </Link>
-        </motion.div>
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <p className="text-red-500 text-lg">Gagal memuat data halaman</p>
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100">
-      {/* Floating Header */}
-      <motion.header
-        initial={{ y: -50 }}
-        animate={{ y: 0 }}
-        className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-blue-100"
-      >
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="p-2 rounded-full bg-blue-100 text-blue-600 disabled:opacity-40"
-                title="Halaman Sebelumnya"
-              >
-                <FiChevronLeft size={20} />
-              </motion.button>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-blue-300 sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          {/* Back Button */}
+          <Link href="/surat">
+            <button className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition">
+              <FaArrowLeft size={18} />
+              <span className="hidden sm:inline">Kembali</span>
+            </button>
+          </Link>
 
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium"
-              >
-                Halaman {currentPage}
-              </motion.div>
+          {/* Page Info */}
+          <div className="text-center">
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-800">
+              <span className="text-white">Halaman</span> {currentPage}
+            </h1>
+          </div>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="p-2 rounded-full bg-blue-100 text-blue-600 disabled:opacity-40"
-                title="Halaman Berikutnya"
-              >
-                <FiChevronRight size={20} />
-              </motion.button>
-            </div>
+          {/* Right Side Buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleBookmark}
+              className={`p-2 rounded-full ${
+                bookmarkedPages.includes(currentPage)
+                  ? "text-yellow-500 bg-white"
+                  : "text-blue-600 bg-white"
+              } shadow hover:bg-blue-100 transition`}
+              title="Bookmark Halaman"
+            >
+              <FiBookmark size={18} />
+            </button>
 
-            <div className="flex items-center gap-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={toggleBookmark}
-                className={`p-2 rounded-full ${
-                  bookmarkedPages.includes(currentPage)
-                    ? "text-yellow-500"
-                    : "text-blue-600"
-                } bg-blue-100`}
-                title="Bookmark Halaman"
-              >
-                <FiBookmark size={18} />
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowTranslation(!showTranslation)}
-                className={`p-2 rounded-full ${
-                  showTranslation
-                    ? "bg-blue-600 text-white"
-                    : "bg-blue-100 text-blue-600"
-                }`}
-                title={
-                  showTranslation
-                    ? "Sembunyikan Terjemahan"
-                    : "Tampilkan Terjemahan"
-                }
-              >
-                {showTranslation ? <FiEyeOff size={18} /> : <FiEye size={18} />}
-              </motion.button>
-
-              <Link href="/surat">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="p-2 rounded-full bg-blue-100 text-blue-600"
-                  title="Kembali"
-                >
-                  <FaArrowLeft size={18} />
-                </motion.button>
-              </Link>
-            </div>
+            <button
+              onClick={() => setShowTranslation(!showTranslation)}
+              className={`p-2 rounded-full ${
+                showTranslation
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-blue-600"
+              } shadow hover:bg-blue-100 transition`}
+              title={
+                showTranslation
+                  ? "Sembunyikan Terjemahan"
+                  : "Tampilkan Terjemahan"
+              }
+            >
+              {showTranslation ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+            </button>
           </div>
         </div>
-      </motion.header>
+
+        {/* Navigation Buttons */}
+        <div className="container mx-auto px-4 pb-4 flex justify-center gap-4">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition disabled:opacity-50"
+            title="Halaman Sebelumnya"
+          >
+            <FaArrowLeftLong size={18} />
+            <span className="hidden sm:inline">Sebelumnya</span>
+          </button>
+
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-full shadow hover:bg-blue-100 transition disabled:opacity-50"
+            title="Halaman Berikutnya"
+          >
+            <span className="hidden sm:inline">Berikutnya</span>
+            <FaArrowRight size={18} />
+          </button>
+        </div>
+      </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 pt-20 pb-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="space-y-8"
-        >
+      <div className="container mx-auto px-4 py-6">
+        <div className="space-y-4">
           {data.data.map((item: any, index: number) => {
             const isFirstVerseOfSurah = item.ayat.number.inSurah === 1;
             const isNewSurah =
@@ -222,73 +174,58 @@ const QuranPage = ({ page_no }: { page_no: string }) => {
               item.surah.nama_latin === "At-Taubah";
 
             return (
-              <motion.div
+              <div
                 key={item.ayat.number.inQuran}
-                whileHover={{ scale: 1.005 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="bg-white rounded-lg shadow-sm p-5 hover:shadow-md transition-shadow duration-200"
               >
                 {(isFirstVerseOfSurah || isNewSurah) && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-center my-8 bg-white p-6 rounded-xl shadow-sm"
-                  >
-                    <h2 className="text-2xl font-bold text-blue-800 mb-2">
+                  <div className="text-center my-6">
+                    <h2 className="text-xl font-bold text-blue-800 mb-2">
                       {item.surah.nama_latin}
                     </h2>
                     <p className="text-blue-600 mb-4">
                       {item.surah.arti} • {item.surah.jumlah_ayat} ayat
                     </p>
                     {!isFatihahOrTaubah && (
-                      <motion.p
-                        initial={{ scale: 0.9 }}
-                        animate={{ scale: 1 }}
-                        className={`text-3xl font-arabic text-blue-900 ${lpmqFont.className}`}
+                      <p
+                        className={`text-center text-3xl font-arabic ${lpmqFont.className} text-gray-800`}
                       >
                         بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
-                      </motion.p>
+                      </p>
                     )}
-                  </motion.div>
+                  </div>
                 )}
 
-                <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="bg-blue-600 text-white text-sm px-3 py-1 rounded-full">
-                      Ayat {item.ayat.number.inSurah}
-                    </span>
-                    <span className="text-sm text-blue-600">
-                      {item.surah.nama_latin}
-                    </span>
-                  </div>
-
-                  <p
-                    className={`text-right text-3xl font-arabic text-gray-800 ${lpmqFont.className} leading-loose mb-4`}
-                  >
-                    {item.ayat.arab}
-                    <span className="text-blue-500 text-4xl mx-2">
-                      ۝{toArabicNumber(item.ayat.number.inSurah)}
-                    </span>
-                  </p>
-
-                  <p className="text-sm italic text-gray-600 mb-2">
-                    {item.ayat.latin}
-                  </p>
-
-                  {showTranslation && (
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-base text-gray-700 mt-4 p-3 bg-blue-50 rounded-lg"
-                    >
-                      {item.ayat.translation}
-                    </motion.p>
-                  )}
+                {/* Ayat Number */}
+                <div className="flex justify-between items-center mb-4">
+                  <span className="p-2 text-xl border-image-custom flex items-center justify-center w-15 h-10">
+                    {item.ayat.number.inSurah}.
+                  </span>
                 </div>
-              </motion.div>
+
+                {/* Arabic Text */}
+                <p
+                  className={`text-right text-3xl font-arabic text-gray-800 ${lpmqFont.className} mb-4`}
+                >
+                  {item.ayat.arab}
+                </p>
+
+                {/* Latin Text */}
+                <p className="text-sm italic text-gray-600 mb-2">
+                  {item.ayat.latin}
+                </p>
+
+                {/* Translation (conditionally shown) */}
+                {showTranslation && (
+                  <p className="text-base text-gray-700">
+                    {item.ayat.translation}
+                  </p>
+                )}
+              </div>
             );
           })}
-        </motion.div>
-      </main>
+        </div>
+      </div>
     </div>
   );
 };
