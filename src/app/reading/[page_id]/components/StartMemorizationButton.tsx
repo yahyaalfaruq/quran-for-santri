@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { GiBrain } from "react-icons/gi";
+import { FaPlayCircle } from "react-icons/fa";
 
 interface StartMemorizationButtonProps {
   pageId: string;
@@ -31,7 +31,7 @@ const StartMemorizationButton: React.FC<StartMemorizationButtonProps> = ({ pageI
         disabled={!isEnabled}
       >
         Mulai Menghafal 
-        <GiBrain className={`text-xl ${isEnabled ? "text-white" : "text-gray-400"}`} />
+        <FaPlayCircle className={`text-xl ${isEnabled ? "text-white" : "text-gray-400"}`} />
       </button>
     </Link>
   );

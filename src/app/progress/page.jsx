@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { json } from 'stream/consumers';
 
 const ProgressPage = () => {
   const [progress, setProgress] = useState({

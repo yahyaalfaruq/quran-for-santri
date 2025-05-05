@@ -19,22 +19,12 @@
     transform: scale(1);
     opacity: 1;
   }
+  
 }
-
 .animate-check {
-  position: relative;
-  background-color: #E0F2FE; /* Latar belakang sky blue 100 */
+  animation: checkmark-animation 0.4s ease-in-out;
 }
 
-.animate-check::after {
-  content: '✔';
-  position: absolute;
-  left: 1.6rem;
-  top: 1rem;
-  font-size: 3rem;
-  color: #2563EB;
-  animation: checkmark-animation 0.5s ease-in-out;
-}
 
 /* dari deepseek */
 @layer utilities {

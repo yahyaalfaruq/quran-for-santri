@@ -19,7 +19,7 @@ const InstructionModal = ({
           </div>
           <h2 className="text-2xl font-bold text-sky-800 mb-3">Instruksi Membaca</h2>
           <p className="text-gray-700 mb-6">
-            Bacalah halaman ini sebanyak <span className="font-bold text-sky-600">3x</span> sebelum melanjutkan ke hafalan!
+            Bacalah halaman ini sebanyak <span className="font-bold text-sky-600">20x</span> pada setiap ayat yang dihafal!
           </p>
           <button
             onClick={onClose}

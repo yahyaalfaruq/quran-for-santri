@@ -125,8 +125,9 @@ const Page = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="flex flex-col gap-3 justify-center items-center min-h-screen bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className='text-xl text-blue-500'>Memuat halaman...</div>
       </div>
     );
   }
@@ -291,12 +292,10 @@ const Page = () => {
     // dari deepseek yang ditambahin sticky header
     <div className="min-h-screen bg-gradient-to-b from-sky-100 to-sky-200" ref={contentRef}>
       {/* Sticky Header */}
-      <header className={`sticky top-0 z-50 bg-gradient-to-b from-sky-100 to-sky-200 transition-all duration-300 ${isScrolled ? 'py-2 shadow-lg' : 'py-5'}`}>
+      <header className={`sticky top-0 z-50 bg-gradient-to-b from-sky-100 to-sky-200 transition-all duration-300 ${isScrolled ? 'py-8 shadow-lg' : 'py-10'}`}>
         <div className="container flex flex-col gap-2 mx-auto px-4">
           {/* Top Row - Page Title */}
-          <h1 className={`font-bold text-center text-sky-800 transition-all ${isScrolled ? 'text-xl' : 'text-3xl'}`}>
-            Halaman {page_id}
-          </h1>
+          
           
           {/* Bottom Row - Three Button Layout */}
           <div className="flex items-center justify-between mt-2">
@@ -315,6 +314,10 @@ const Page = () => {
                 <FaHome className="text-lg" />
               </button>
             </div>
+
+            <h1 className={`font-bold text-center text-sky-800 transition-all ${isScrolled ? 'text-xl' : 'text-3xl'}`}>
+              Halaman {page_id}
+            </h1>
             
             <div className="flex gap-1">
               {/* Translation Toggle - Center */}
@@ -341,16 +344,6 @@ const Page = () => {
               </button>
             </div>
           </div>
-
-          {/* Surah Info */}
-          {ayahs.length > 0 && (
-              <h3 className={`text-center font-bold mt-2 text-sky-700 ${isScrolled ? 'text-lg' : 'text-xl'}`}>
-                Surah {ayahs[0].surah.nama_latin} ({ayahs[0].surah.nama}) — 
-                {ayahs.length === 1
-                  ? `Ayat ${ayahs[0].ayat.number.inSurah}`
-                  : `Ayat ${ayahs[0].ayat.number.inSurah} - ${ayahs[ayahs.length - 1].ayat.number.inSurah}`}
-              </h3>
-            )}
         </div>
       </header>
 
