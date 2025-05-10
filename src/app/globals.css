@@ -1,7 +1,4 @@
 @import "tailwindcss";
-@import 'tailwindcss/preflight'; /* Mengimpor preflight untuk reset dan dasar styling */
-@tailwind utilities;
-
 
 .border-image-custom {
   border: 2px solid transparent;

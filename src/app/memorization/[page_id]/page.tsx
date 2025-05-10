@@ -185,7 +185,7 @@ const MemorizationPage = () => {
               </div>
               
               <p className="text-lg text-gray-600 italic mt-2">{currentAyah.ayat.latin}</p>
-              <p className="text-xl">{currentAyah.ayat.translation}</p>
+              <p className="text-xl">({currentAyah.ayat.number.inSurah}) {currentAyah.ayat.translation}</p>
             </div>
           </div>
         );

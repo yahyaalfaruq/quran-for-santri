@@ -36,7 +36,6 @@ const Page = () => {
   const [hasShownInstruction, setHasShownInstruction] = useState(false); // 🆕
   const [completedAyahs, setCompletedAyahs] = useState<number[]>([]); // Track completed ayahs
   const [showTranslation, setShowTranslation] = useState(true);
-
   
   useEffect(() => {
     const fetchPageData = async () => {

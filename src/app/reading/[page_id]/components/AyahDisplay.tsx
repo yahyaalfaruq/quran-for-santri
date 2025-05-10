@@ -44,7 +44,7 @@ const AyahDisplay = ({ ayah, showTranslation }: { ayah: Ayah; showTranslation: b
       {showTranslation && (
       <>
         <p className="text-lg text-gray-600 italic mt-2">{ayah.ayat.latin}</p>
-        <p className="text-xl">{ayah.ayat.translation}</p>
+        <p className="text-xl">({ayah.ayat.number.inSurah}) {ayah.ayat.translation}</p>
       </>
       )}
 
