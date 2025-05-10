@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import AyahDisplay from "../../memorization/[page_id]/components/AyahDisplay";
+import AyahDisplay from "./components/AyahDisplay";
 import { ms } from "date-fns/locale";
 import ConfirmReadButton from "./components/ConfirmReadButton";
 import StartMemorizationButton from "./components/StartMemorizationButton";
+import { toast } from 'sonner';
 
 interface Ayah {
   number: {
@@ -102,7 +103,29 @@ const Page = () => {
   // 🆕 Alert langsung muncul setelah loading selesai
   useEffect(() => {
     if (!loading && !error && !hasShownInstruction) {
-      alert("Bacalah halaman ini sebanyak 3x!");
+      toast("⭐ Bacalah halaman ini sebanyak 3x!", {
+        description: "", // atau bisa kamu isi tambahan penjelasan
+        style: {
+          background: '#f0f9ff',
+          color: '#0369a1',
+          fontWeight: 'bold',
+          border: '1px solid #bae6fd',
+          padding: '1rem',
+          fontSize: '1rem',
+        },
+        duration: Infinity,
+        action: (
+          <button
+            onClick={() => {
+              // Tutup toast saat tombol diklik
+              toast.dismiss();
+            }}
+            className="bg-blue-600 text-white font-bold text-[0.7rem] rounded-lg px-1 py-1 hover:bg-blue-700 transition-colors"
+          >
+            Oke
+          </button>
+        ),
+      });
       setHasShownInstruction(true);
     }
   }, [loading, error, hasShownInstruction]);
