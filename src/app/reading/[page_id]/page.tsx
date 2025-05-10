@@ -92,34 +92,18 @@ const Page = () => {
 
   useEffect(() => {
     if (!loading && !error && !hasShownInstruction) {
-      // toast("⭐ Bacalah halaman ini sebanyak 3x!", {
-      //   description: "",
-      //   style: {
-      //     background: '#f0f9ff',
-      //     color: '#0369a1',
-      //     fontWeight: 'bold',
-      //     border: '1px solid #bae6fd',
-      //     padding: '1rem',
-      //     fontSize: '1rem',
-      //   },
-      //   duration: Infinity,
-      //   action: (
-      //     <button
-      //       onClick={() => {
-      //         toast.dismiss();
-      //       }}
-      //       className="bg-blue-600 text-white font-bold text-[0.7rem] rounded-lg px-1 py-1 hover:bg-blue-700 transition-colors"
-      //     >
-      //       Oke
-      //     </button>
-      //   ),
-      // });
       setShowModal(true);
       setHasShownInstruction(true);
     }
   }, [loading, error, hasShownInstruction]);
 
-  if (loading) return <p className="text-center mt-10">Memuat...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!ayahs.length) return <p className="text-center">Tidak ada ayat untuk halaman ini.</p>;
 
