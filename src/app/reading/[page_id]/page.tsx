@@ -35,6 +35,8 @@ const Page = () => {
   const [readCount, setReadCount] = useState<number>(0);
   const [hasShownInstruction, setHasShownInstruction] = useState(false); // 🆕
   const [completedAyahs, setCompletedAyahs] = useState<number[]>([]); // Track completed ayahs
+  const [showTranslation, setShowTranslation] = useState(true);
+
   
   useEffect(() => {
     const fetchPageData = async () => {
@@ -126,6 +128,26 @@ const Page = () => {
   return (
     <div className="p-8 relative">
       <h1 className="text-5xl font-bold mb-4 text-center">Halaman {page_id}</h1>
+      <button
+          onClick={() => setShowTranslation((prev) => !prev)}
+          className="mb-6 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+        >
+          {showTranslation ? "Sembunyikan Arti & Latin" : "Tampilkan Arti & Latin"}
+      </button>
+      <button
+        onClick={() => {
+          const elem = document.documentElement;
+          if (!document.fullscreenElement) {
+            elem.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+          }}
+          className="fixed bottom-4 right-4 px-4 py-2 bg-yellow-500 text-white font-bold rounded-lg shadow-lg hover:bg-yellow-600 transition"
+      >
+        Toggle Fullscreen
+      </button>
+
       <div className="space-y-6">
           {ayahs.map((currentAyah, index) => {
             const isCompleted = completedAyahs.includes(index);
@@ -150,7 +172,8 @@ const Page = () => {
                   </h3>
                 )}
 
-                <AyahDisplay ayah={currentAyah} />
+                <AyahDisplay ayah={currentAyah} showTranslation={showTranslation} />
+
               </div>
             );
           })}

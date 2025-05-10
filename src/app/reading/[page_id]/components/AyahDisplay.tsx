@@ -23,7 +23,7 @@ interface Ayah {
 }
 
 
-const AyahDisplay = ({ ayah }: { ayah: Ayah }) => {
+const AyahDisplay = ({ ayah, showTranslation }: { ayah: Ayah; showTranslation: boolean }) => {
   return (
     <div className={`font-arabic p-7 ${lpmqFont.className} flex flex-col gap-3`}>
       {/* Tampilkan Bismillah jika ayat pertama, dan bukan Al-Fatihah */}
@@ -41,8 +41,13 @@ const AyahDisplay = ({ ayah }: { ayah: Ayah }) => {
           {numLatinToArabic(ayah.ayat.number.inSurah)}
         </span>
       </div>
-      <p className="text-lg text-gray-600 italic mt-2">{ayah.ayat.latin}</p>
-      <p className="text-xl">{ayah.ayat.translation}</p>
+      {showTranslation && (
+      <>
+        <p className="text-lg text-gray-600 italic mt-2">{ayah.ayat.latin}</p>
+        <p className="text-xl">{ayah.ayat.translation}</p>
+      </>
+      )}
+
     </div>
   );
 };
