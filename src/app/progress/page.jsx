@@ -1,6 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { json } from 'stream/consumers';
 
 const ProgressPage = () => {
   const [progress, setProgress] = useState({
@@ -16,12 +17,23 @@ const ProgressPage = () => {
   const router = useRouter();
 
   const handleCheckboxChange = (day) => {
-    setProgress((prev) => ({
+    console.log("Hari adalah ", day);
+    setProgress((prev) => {
+      localStorage.setItem("days", JSON.stringify({
+        ...prev,
+        [day]: !prev[day],
+      }))
+      return {
       ...prev,
       [day]: !prev[day],
-    }));
+    }});
   };
 
+  useEffect(() => {
+    const days = localStorage.getItem("days");
+    setProgress(JSON.parse(days));
+  }, []);
+  
   const handleSave = () => {
     // Simpan progres (misalnya ke localStorage atau backend API)
     console.log('Progres disimpan:', progress);

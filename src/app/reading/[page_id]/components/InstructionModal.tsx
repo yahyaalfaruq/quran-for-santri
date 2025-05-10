@@ -11,18 +11,21 @@ const InstructionModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-white/30 bg-opacity-80 backdrop-blur-sm flex items-center justify-center px-4 overflow-hidden">
-      <div className=" bg-sky-50 rounded-lg p-6 max-w-md w-full shadow-lg">
-        <h2 className="text-xl text-sky-700 font-bold mb-4 text-center">⭐ Instruksi</h2>
-        <p className="text-sky-700 text-center mb-6">
-          Bacalah halaman ini sebanyak <span className="font-semibold">3x</span> sebelum melanjutkan ke hafalan!
-        </p>
-        <div className="flex justify-center">
+    <div className="fixed inset-0 z-50 bg-sky-100/80 backdrop-blur-sm flex items-center justify-center px-4">
+      <div className="bg-white rounded-xl p-8 max-w-md w-full shadow-2xl border-2 border-sky-200">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl text-sky-600">⭐</span>
+          </div>
+          <h2 className="text-2xl font-bold text-sky-800 mb-3">Instruksi Membaca</h2>
+          <p className="text-gray-700 mb-6">
+            Bacalah halaman ini sebanyak <span className="font-bold text-sky-600">3x</span> sebelum melanjutkan ke hafalan!
+          </p>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            className="px-6 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition shadow-md font-medium"
           >
-            Siap, mulai!
+            Siap, Mulai!
           </button>
         </div>
       </div>

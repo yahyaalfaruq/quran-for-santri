@@ -24,12 +24,31 @@ const ConfirmReadButton: React.FC<ConfirmReadButtonProps> = ({ pageId, readCount
   };
 
   return (
+    // sebelum deepseek
+    // <button
+    //   onClick={handleConfirm}
+    //   className={`flex items-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded ${readCount >= 3 ? "bg-gray-400 text-gray-200 hover:bg-gray-400  cursor-not-allowed" : ""}`}
+    //   disabled={readCount >= 3}
+    // >
+    //   <BsPatchCheckFill className="text-xl" /> Sudah Dibaca {readCount}/3
+    // </button>
+
+    // dari deepseek
     <button
       onClick={handleConfirm}
-      className={`flex items-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded ${readCount >= 3 ? "bg-gray-400 text-gray-200 hover:bg-gray-400  cursor-not-allowed" : ""}`}
+      className={`flex items-center gap-3 px-6 py-3 rounded-lg transition-all shadow-md ${
+        readCount >= 3 
+          ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+          : "bg-sky-600 hover:bg-sky-700 text-white"
+      }`}
       disabled={readCount >= 3}
-    >
-      <BsPatchCheckFill className="text-xl" /> Sudah Dibaca {readCount}/3
+      >
+      {readCount >= 3 ? (
+        <MdDone className="text-xl" />
+      ) : (
+        <BsPatchCheckFill className="text-xl" />
+      )}
+      Sudah Dibaca {readCount}/3
     </button>
   );
 };
