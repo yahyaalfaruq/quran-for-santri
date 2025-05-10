@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import HighlightText from './components/HighlightText';
 import Counter from './components/Counter';
+import InstructionModal from './components/InstructionModal';
+
+import toast from 'react-hot-toast'; // tambahkan di atas
 
 import localFont from 'next/font/local';
 
@@ -37,6 +40,10 @@ const MemorizationPage = () => {
   const [count, setCount] = useState(0);
   const [displayedIndices, setDisplayedIndices] = useState<number[]>([0]);
   const [completedAyahs, setCompletedAyahs] = useState<number[]>([]); 
+  const [hasShownInstruction, setHasShownInstruction] = useState(false); // 🆕
+  const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -49,6 +56,7 @@ const MemorizationPage = () => {
         setAyahs(result.data);
       } catch (error) {
         console.error('Error fetching data:', error);
+        setError('Terjadi kesalahan saat memuat data');
       } finally {
         setLoading(false);
       }
@@ -79,8 +87,24 @@ const MemorizationPage = () => {
     }
   };
   
+  // 🆕 Alert langsung muncul setelah loading selesai
+  useEffect(() => {
+    if (!loading && !error && !hasShownInstruction) {
+      // toast("Bacalah halaman ini sebanyak 3x!", {
+      //   style: {
+      //     background: '#f0f9ff',
+      //     color: '#0369a1',
+      //     fontWeight: 'bold',
+      //   },
+      //   icon: '⭐',
+      // });
+      setShowModal(true);
+      setHasShownInstruction(true);
+    }
+  }, [loading, error, hasShownInstruction]);
 
   if (loading) return <p className="text-center">Memuat halaman...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
   if (ayahs.length === 0) return <p className="text-center">Tidak ada ayat</p>;
 
   return (
@@ -163,6 +187,8 @@ const MemorizationPage = () => {
           Lanjut Ayat
         </button>
       </div>
+      <InstructionModal isOpen={showModal} onClose={() => setShowModal(false)} />
+
     </div>
   );
 };
