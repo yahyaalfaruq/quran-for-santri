@@ -54,9 +54,7 @@ const MemorizationPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `https://quran.ppqita.my.id/api/quran?mushafPage=${pageId}&token=TADABBUR_EMAILKU`
-        );
+        const response = await fetch(`/api/quran?mushafPage=${pageId}`);
         const result = await response.json();
         setAyahs(result.data);
       } catch (error) {

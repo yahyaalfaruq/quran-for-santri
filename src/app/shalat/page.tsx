@@ -47,8 +47,9 @@ const JadwalShalatPage = () => {
   const [jarakWaktu, setJarakWaktu] = useState<{ jam: number; menit: number; detik: number } | null>(null);
   const [jamSekarang, setJamSekarang] = useState<string>('');
 
-  // Ambil lokasi pengguna
+  // Ambil lokasi pengguna (fallback ke Jakarta jika akses lokasi ditolak/gagal)
   useEffect(() => {
+    const defaultLokasi = { latitude: -6.2088, longitude: 106.8456 };
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -58,12 +59,13 @@ const JadwalShalatPage = () => {
           });
         },
         (error) => {
-          console.error('Error getting location:', error);
-          setError('Tidak dapat mengambil lokasi. Silakan izinkan akses lokasi.');
-        }
+          console.warn('Geolocation tidak diizinkan, menggunakan lokasi default:', error);
+          setLokasi(defaultLokasi);
+        },
+        { timeout: 5000 }
       );
     } else {
-      setError('Browser tidak mendukung geolocation.');
+      setLokasi(defaultLokasi);
     }
   }, []);
 
@@ -74,33 +76,20 @@ const JadwalShalatPage = () => {
     const fetchJadwal = async () => {
       try {
         const today = new Date();
-        const dateString = today.toISOString().split('T')[0];
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        const dateString = `${dd}-${mm}-${yyyy}`;
         const response = await fetch(
-          `https://api.aladhan.com/v1/timings/${dateString}?latitude=${lokasi.latitude}&longitude=${lokasi.longitude}&method=2`
+          `https://api.aladhan.com/v1/timings/${dateString}?latitude=${lokasi.latitude}&longitude=${lokasi.longitude}&method=20`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
-        
-        // Modifikasi data untuk set bulan Hijriyah ke Dzul Qa'dah (ذو القعدة)
-        const modifiedData = {
-          ...result.data,
-          date: {
-            ...result.data.date,
-            hijri: {
-              ...result.data.date.hijri,
-              month: {
-                ...result.data.date.hijri.month,
-                ar: "ذو القعدة",
-                en: "Dhu al-Qi'dah"
-              }
-            }
-          }
-        };
-        
-        setJadwal(modifiedData);
-        hitungShalatSekarangDanBerikutnya(modifiedData.timings);
+
+        setJadwal(result.data);
+        hitungShalatSekarangDanBerikutnya(result.data.timings);
       } catch (error) {
         console.error('Error fetching jadwal shalat:', error);
         setError('Gagal memuat jadwal shalat. Silakan coba lagi.');

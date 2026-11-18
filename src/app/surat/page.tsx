@@ -40,12 +40,10 @@ export default function Page() {
   };
 
   useEffect(() => {
-    fetch(
-      "https://quran.ppqita.my.id/api/quran?listSurah=true&token=TADABBUR_EMAILKU"
-    )
+    fetch("/api/quran?listSurah=true")
       .then((response) => response.json())
       .then((data) => {
-        setSurahs(data.data);
+        setSurahs(Array.isArray(data?.data) ? data.data : []);
         setLoading(false);
       })
       .catch((error) => {

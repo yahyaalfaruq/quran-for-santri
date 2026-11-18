@@ -72,10 +72,8 @@ const Page = () => {
 
         const { start, end } = pageMapping;
 
-        // Fetch Quran ayahs in the range
-        const response = await fetch(
-          `https://quran.ppqita.my.id/api/quran?mushafPage=${page_id}&token=TADABBUR_EMAILKU`
-        );
+        // Fetch Quran ayahs for mushaf page
+        const response = await fetch(`/api/quran?mushafPage=${page_id}`);
 
         if (!response.ok) {
           throw new Error("Failed to load Quran ayahs");

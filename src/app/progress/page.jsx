@@ -23,16 +23,26 @@ const ProgressPage = () => {
         [day]: !prev[day],
       }))
       return {
-      ...prev,
-      [day]: !prev[day],
-    }});
+        ...prev,
+        [day]: !prev[day],
+      }
+    });
   };
 
   useEffect(() => {
     const days = localStorage.getItem("days");
-    setProgress(JSON.parse(days));
+    if (days) {
+      try {
+        const parsed = JSON.parse(days);
+        if (parsed && typeof parsed === "object") {
+          setProgress((prev) => ({ ...prev, ...parsed }));
+        }
+      } catch {
+        // ignore invalid json
+      }
+    }
   }, []);
-  
+
   const handleSave = () => {
     // Simpan progres (misalnya ke localStorage atau backend API)
     console.log('Progres disimpan:', progress);

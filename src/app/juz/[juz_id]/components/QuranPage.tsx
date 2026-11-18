@@ -66,9 +66,7 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
     const fetchJuzData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(
-          `https://quran.ppqita.my.id/api/quran?juz=${juzNumber}&token=TADABBUR_EMAILKU`
-        );
+        const res = await fetch(`/api/quran?juz=${juzNumber}`);
 
         if (!res.ok) throw new Error(`Gagal memuat data juz ${juzNumber}`);
 
@@ -263,7 +261,7 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
                 <h2 className="text-xl font-bold text-blue-800 mb-2">
                   {group.surah.name}
                 </h2>
-                <p className="text-blue-600 mb-4">
+                <div className="text-blue-600 mb-4">
                   {group.surah.number !== 1 && group.surah.number !== 9 && (
                     <div className="mb-4">
                       <p
@@ -278,7 +276,7 @@ const QuranPage = ({ juz_id }: { juz_id: string }) => {
                       )}
                     </div>
                   )}
-                </p>
+                </div>
               </div>
 
               {/* Ayahs */}

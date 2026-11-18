@@ -32,14 +32,14 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `https://quran.ppqita.my.id/api/quran?surat=${surat_id}&token=TADABBUR_EMAILKU`
-        );
+        setLoading(true);
+        const response = await fetch(`/api/quran?surat=${surat_id}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
         setData(result);
+        setError(null);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("Gagal memuat data. Silakan coba lagi.");
@@ -86,7 +86,7 @@ const SuratPage: React.FC<SuratPageProps> = ({ surat_id }) => {
   }
 
   const currentSurahNumber = parseInt(surat_id);
-  const isNotAlFatihah = currentSurahNumber !== 1;
+  const isNotAlFatihah = currentSurahNumber !== 1 && currentSurahNumber !== 9;
   const hasPreviousSurah = currentSurahNumber > 1;
   const hasNextSurah = currentSurahNumber < 114;
 

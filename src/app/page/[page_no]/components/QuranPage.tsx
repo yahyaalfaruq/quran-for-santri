@@ -37,12 +37,21 @@ const QuranPage = ({ page_no }: { page_no: string }) => {
   const currentPage = !isNaN(parseInt(page_no, 10)) ? parseInt(page_no, 10) : 1;
 
   useEffect(() => {
+    const savedBookmarks = localStorage.getItem("bookmarkedPages");
+    if (savedBookmarks) {
+      try {
+        setBookmarkedPages(JSON.parse(savedBookmarks));
+      } catch {
+        // ignore invalid json
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          `https://quran.ppqita.my.id/api/quran?mushafPage=${page_no}&token=TADABBUR_gazfath12@gmail.com`
-        );
+        const response = await fetch(`/api/quran?mushafPage=${page_no}`);
         if (!response.ok) throw new Error("Failed to fetch data");
         const result = await response.json();
         setData(result);
@@ -64,11 +73,11 @@ const QuranPage = ({ page_no }: { page_no: string }) => {
   };
 
   const toggleBookmark = () => {
-    if (bookmarkedPages.includes(currentPage)) {
-      setBookmarkedPages(bookmarkedPages.filter((p) => p !== currentPage));
-    } else {
-      setBookmarkedPages([...bookmarkedPages, currentPage]);
-    }
+    const updated = bookmarkedPages.includes(currentPage)
+      ? bookmarkedPages.filter((p) => p !== currentPage)
+      : [...bookmarkedPages, currentPage];
+    setBookmarkedPages(updated);
+    localStorage.setItem("bookmarkedPages", JSON.stringify(updated));
   };
 
   if (loading)
