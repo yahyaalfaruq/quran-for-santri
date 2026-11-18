@@ -112,15 +112,16 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
+    const contentEl = contentRef.current;
     const handleScroll = () => {
-      if (contentRef.current) {
-        const scrollTop = contentRef.current.getBoundingClientRect().top;
+      if (contentEl) {
+        const scrollTop = contentEl.getBoundingClientRect().top;
         setIsScrolled(scrollTop < -50); // Mulai sticky setelah scroll 50px
       }
     };
 
-    contentRef.current?.addEventListener('scroll', handleScroll);
-    return () => contentRef.current?.removeEventListener('scroll', handleScroll);
+    contentEl?.addEventListener('scroll', handleScroll);
+    return () => contentEl?.removeEventListener('scroll', handleScroll);
   }, []);
 
   if (loading) {
